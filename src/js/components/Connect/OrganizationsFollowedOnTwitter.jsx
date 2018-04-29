@@ -1,7 +1,9 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import FollowToggle from "../../components/Widgets/FollowToggle";
+import { renderLog } from "../../utils/logging";
 import OrganizationCard from "../../components/VoterGuide/OrganizationCard";
 import OrganizationTinyDisplay from "../../components/VoterGuide/OrganizationTinyDisplay";
 
@@ -59,6 +61,7 @@ export default class OrganizationsFollowedOnTwitter extends Component {
   }
 
   render () {
+    renderLog(__filename);
     if (this.state.organizations_followed_on_twitter === undefined) {
       return null;
     }
@@ -93,11 +96,11 @@ export default class OrganizationsFollowedOnTwitter extends Component {
             twitter_followers_count: one_organization.twitter_followers_count,
           };
 
-        let organizationPopover = <Popover
-            id={`organization-popover-${org_id}`}
-            onMouseOver={() => this.onTriggerEnter(org_id)}
-            onMouseOut={() => this.onTriggerLeave(org_id)}
-            className="card-popover">
+        let organizationPopover = <Popover className="card-popover"
+                                           id={`organization-popover-${org_id}`}
+                                           onMouseOver={() => this.onTriggerEnter(org_id)}
+                                           onMouseOut={() => this.onTriggerLeave(org_id)}
+                                           >
             <div className="card">
               <div className="card-main">
                 <FollowToggle we_vote_id={one_organization.organization_we_vote_id} />

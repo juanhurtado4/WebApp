@@ -1,6 +1,8 @@
-import React, { PropTypes, Component } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
 import { shortenText } from "../../utils/textFormat";
+import { renderLog } from "../../utils/logging";
 import VoterGuideStore from "../../stores/VoterGuideStore";
 import VoterStore from "../../stores/VoterStore";
 
@@ -45,6 +47,7 @@ export default class PledgeToVoteButton extends Component {
   }
 
   render () {
+    renderLog(__filename);
     if (!this.state.voter_guide) {
       return null;
     }

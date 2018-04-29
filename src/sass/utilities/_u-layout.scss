@@ -30,6 +30,14 @@
 .u-margin-left--md { margin-left: $space-md; }
 .u-margin-left--lg { margin-left: $space-lg; }
 
+// stylelint-disable declaration-block-single-line-max-declarations
+.u-margin-left-right--xxs { margin-left: $space-xxs; margin-right: $space-xxs; }
+.u-margin-left-right--xs { margin-left: $space-xs; margin-right: $space-xs; }
+.u-margin-left-right--sm { margin-left: $space-sm; margin-right: $space-sm; }
+.u-margin-left-right--md { margin-left: $space-md; margin-right: $space-md; }
+.u-margin-left-right--lg { margin-left: $space-lg; margin-right: $space-lg; }
+// stylelint-enable
+
 .u_margin-center { margin: $space-none $space-auto; }
 
 // Stack classes
@@ -46,6 +54,18 @@
 .u-stack--md { margin-bottom: $space-md; }
 .u-stack--lg { margin-bottom: $space-lg; }
 .u-stack--xl { margin-bottom: $space-xl; }
+
+.u-padding-top--xxs { padding-top: $space-xxs; }
+.u-padding-top--xs { padding-top: $space-xs; }
+.u-padding-top--sm { padding-top: $space-sm; }
+.u-padding-top--md { padding-top: $space-md; }
+.u-padding-top--lg { padding-top: $space-lg; }
+
+.u-padding-bottom--xxs { padding-bottom: $space-xxs; }
+.u-padding-bottom--xs { padding-bottom: $space-xs; }
+.u-padding-bottom--sm { padding-bottom: $space-sm; }
+.u-padding-bottom--md { padding-bottom: $space-md; }
+.u-padding-bottom--lg { padding-bottom: $space-lg; }
 
 // Inset classes
 // -------------------------------
@@ -74,6 +94,8 @@
 .u-inset__v--lg { padding-top: $space-lg; padding-bottom: $space-lg; }
 .u-inset__v--xl { padding-top: $space-xl; padding-bottom: $space-xl; }
 // stylelint-enable
+
+// .u-clear { clear: both; }
 
 .u-hidden { display: none; }
 

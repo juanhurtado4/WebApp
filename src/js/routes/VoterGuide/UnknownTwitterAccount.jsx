@@ -1,4 +1,6 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { renderLog } from "../../utils/logging";
 import ThisIsMeAction from "../../components/Widgets/ThisIsMeAction";
 import TwitterAccountCard from "../../components/Twitter/TwitterAccountCard";
 
@@ -14,6 +16,7 @@ export default class UnknownTwitterAccount extends Component {
   }
 
   render () {
+    renderLog(__filename);
     let {twitter_handle, twitter_name} = this.props;
 
     return <div>

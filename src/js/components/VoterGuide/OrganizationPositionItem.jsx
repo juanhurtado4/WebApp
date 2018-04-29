@@ -1,19 +1,20 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
+import BookmarkToggle from "../Bookmarks/BookmarkToggle";
 import ImageHandler from "../ImageHandler";
 import ItemActionBar from "../Widgets/ItemActionBar";
 import ItemPositionStatementActionBar from "../Widgets/ItemPositionStatementActionBar";
 import FriendsOnlyIndicator from "../Widgets/FriendsOnlyIndicator";
-import VoterStore from "../../stores/VoterStore";
+import { renderLog } from "../../utils/logging";
 import OfficeNameText from "../Widgets/OfficeNameText";
 import OrganizationStore from "../../stores/OrganizationStore";
 import PositionInformationOnlySnippet from "../Widgets/PositionInformationOnlySnippet";
 import PositionRatingSnippet from "../Widgets/PositionRatingSnippet";
-import PositionPublicToggle from "../Widgets/PositionPublicToggle";
 import PositionSupportOpposeSnippet from "../Widgets/PositionSupportOpposeSnippet";
-import BookmarkToggle from "../Bookmarks/BookmarkToggle";
-import SupportStore from "../../stores/SupportStore";
 import { capitalizeString } from "../../utils/textFormat";
+import SupportStore from "../../stores/SupportStore";
+import VoterStore from "../../stores/VoterStore";
 
 export default class OrganizationPositionItem extends Component {
   static propTypes = {
@@ -84,8 +85,9 @@ export default class OrganizationPositionItem extends Component {
     this.setState({hide_position_statement: !this.state.hide_position_statement});
   }
 
-  render (){
-    var position = this.props.position;
+  render () {
+    renderLog(__filename);
+    let position = this.props.position;
     let organization = this.state.organization;
 
     if (!position.ballot_item_we_vote_id) {
@@ -213,15 +215,11 @@ export default class OrganizationPositionItem extends Component {
                     className="position-rating__candidate-name u-flex-auto">
                     {ballot_item_display_name}
               </Link>
-
               { (signed_in_with_this_twitter_account ||
                 signed_in_with_this_organization ||
                 signed_in_with_this_facebook_account) &&
                 this.props.editMode ?
-                <PositionPublicToggle ballot_item_we_vote_id={position.ballot_item_we_vote_id}
-                  type={position.kind_of_ballot_item}
-                  supportProps={supportProps}
-                  className="organization-position-item-toggle"/> :
+                  <FriendsOnlyIndicator isFriendsOnly={!is_public_position}/> :
                   <FriendsOnlyIndicator isFriendsOnly={!is_public_position}/>
               }
               <BookmarkToggle we_vote_id={position.ballot_item_we_vote_id} type={position.kind_of_ballot_item} />
@@ -238,6 +236,7 @@ export default class OrganizationPositionItem extends Component {
               <ItemActionBar ballot_item_we_vote_id={position.ballot_item_we_vote_id}
                              ballot_item_display_name={ballot_item_display_name}
                              commentButtonHide
+                             shareButtonHide
                              supportProps={supportProps}
                              transitioning={this.state.transitioning}
                              type={position.kind_of_ballot_item}

@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import ImageHandler from "../../components/ImageHandler";
+import { renderLog } from "../../utils/logging";
 
 // OrganizationTinyDisplay is used by ItemTinyOpinionsToFollow for viewing the logos/icons for voter guides
 //  you can follow on the Ballot page
@@ -18,6 +20,7 @@ export default class OrganizationTinyDisplay extends Component {
   };
 
   render () {
+    renderLog(__filename);
     let display_name;
     if (this.props.voter_guide_display_name) {
       display_name = this.props.voter_guide_display_name;
@@ -38,20 +41,20 @@ export default class OrganizationTinyDisplay extends Component {
       image_url_tiny = "";
     }
 
-    let support_oppose_class = "";
+    let supportOrOpposeClass = "";
     if (this.props.showSupport) {
-      support_oppose_class = "network-positions__show-support-underline ";
+      supportOrOpposeClass = "network-positions__show-support-underline ";
     } else if (this.props.showOppose) {
-      support_oppose_class = "network-positions__show-oppose-underline ";
+      supportOrOpposeClass = "network-positions__show-oppose-underline ";
     }
 
-    let to_follow_class = "";
+    let toFollowClass = "";
     if (this.props.toFollow) {
-      to_follow_class = "network-positions__to-follow-fade ";
+      toFollowClass = "network-positions__to-follow-fade ";
     }
 
     let hide_placeholder = !this.props.showPlaceholderImage;
-    return <ImageHandler className={support_oppose_class + to_follow_class}
+    return <ImageHandler className={supportOrOpposeClass + toFollowClass}
                          sizeClassName="organization__image--tiny"
                          hidePlaceholder={hide_placeholder}
                          imageUrl={image_url_tiny}

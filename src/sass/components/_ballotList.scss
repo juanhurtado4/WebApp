@@ -1,6 +1,13 @@
+$ballotBottomPaddingCordova: 300px;  //needed for editable comment on last proposition
+
 .BallotList {
+  margin-bottom: $space-xl;
   @include print {
     column-count: 1;
+  }
+
+  &__cordova {
+    padding-bottom: $ballotBottomPaddingCordova;
   }
 }
 
@@ -56,6 +63,12 @@
       line-height: 19.6px;
       position: relative;
       font-size: 14px;
+
+      &__display-name {
+        font-family: $heading-font-stack;
+        font-size: 15px;
+        color: $link-color;
+      }
     }
 
     &__item-container {
@@ -64,12 +77,6 @@
       position: relative;
       margin-top: $space-none;
       margin-bottom: $space-md;
-    }
-
-    &__display-name {
-      font-family: $heading-font-stack;
-      font-size: 15px;
-      color: $link-color;
     }
   }
 }
@@ -90,15 +97,29 @@
   &__image {
     display: inline;
 
+    &--small {
+      margin-left: $space-xxs;
+      width: 32px; // 32px is set in WeVoteServer environment_variables as PROFILE_IMAGE_TINY_WIDTH
+      border-radius: $radius-xs;
+    }
+
     &--medium {
       margin-left: $space-xxs;
       width: 48px; // 48px is set in WeVoteServer environment_variables as PROFILE_IMAGE_MEDIUM_WIDTH
+      border-radius: $radius-xs;
+    }
+
+    &--large {
+      margin-left: $space-xxs;
+      width: 125px; // 48px is set in WeVoteServer environment_variables as PROFILE_IMAGE_MEDIUM_WIDTH
       border-radius: $radius-xs;
     }
   }
   &__image-modal {
     display: inline;
   }
+  // This img override is needed because the carousel (slick-slide img)
+  &__image-modal img { display: inline; } // stylelint-disable-line selector-no-type
 }
 
 .BallotItemsSummary {

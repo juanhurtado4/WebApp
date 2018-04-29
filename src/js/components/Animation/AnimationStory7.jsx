@@ -1,6 +1,8 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { historyPush } from "../../utils/cordovaUtils";
 import LoadingWheel from "../../components/LoadingWheel";
+import { renderLog } from "../../utils/logging";
 import VoterStore from "../../stores/VoterStore";
 
 export default class AnimationStory7 extends Component {
@@ -47,6 +49,7 @@ export default class AnimationStory7 extends Component {
   }
 
   render () {
+    renderLog(__filename);
     if (!this.state.voter) {
       return LoadingWheel;
     }

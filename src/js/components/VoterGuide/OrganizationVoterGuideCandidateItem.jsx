@@ -1,10 +1,12 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import BookmarkToggle from "../Bookmarks/BookmarkToggle";
 import CandidateStore from "../../stores/CandidateStore";
 import { historyPush } from "../../utils/cordovaUtils";
 import ImageHandler from "../ImageHandler";
 import ItemSupportOpposeRaccoon from "../Widgets/ItemSupportOpposeRaccoon";
+import { renderLog } from "../../utils/logging";
 import OfficeNameText from "../Widgets/OfficeNameText";
 import ParsedTwitterDescription from "../Twitter/ParsedTwitterDescription";
 import SupportStore from "../../stores/SupportStore";
@@ -119,6 +121,7 @@ export default class OrganizationVoterGuideCandidateItem extends Component {
   }
 
   render () {
+    renderLog(__filename);
     let {
       ballot_item_display_name,
       party,

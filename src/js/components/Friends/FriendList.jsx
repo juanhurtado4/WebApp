@@ -1,6 +1,8 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import FriendDisplayForList from "./FriendDisplayForList";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import { renderLog } from "../../utils/logging";
 
 export default class FriendList extends Component {
 
@@ -29,6 +31,7 @@ export default class FriendList extends Component {
   }
 
   render () {
+    renderLog(__filename);
     if (this.state.friend_list === undefined) {
       return null;
     }

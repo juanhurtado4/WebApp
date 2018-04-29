@@ -49,6 +49,10 @@ class SupportStore extends ReduceStore {
     return this.getState().oppose_counts;
   }
 
+  resetState () {
+    return {};
+  }
+
   listWithChangedCount (list, ballot_item_we_vote_id, amount) {
     return assign({}, list, { [ballot_item_we_vote_id]: list[ballot_item_we_vote_id] + amount });
   }
@@ -174,10 +178,14 @@ class SupportStore extends ReduceStore {
           is_public_position: this.isForPublicListWithChanges(state.is_public_position, ballot_item_we_vote_id, action.res.is_public_position)
         };
 
+      case "voterSignOut":
+        // console.log("resetting SupportStore");
+        return this.resetState();
+
       default:
         return state;
     }
   }
 }
 
-module.exports = new SupportStore(Dispatcher);
+export default new SupportStore(Dispatcher);

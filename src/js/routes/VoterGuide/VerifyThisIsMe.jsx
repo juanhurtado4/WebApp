@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
 import { Link } from "react-router";
 import CandidateItem from "../../components/Ballot/CandidateItem";
@@ -7,6 +8,7 @@ import { historyPush } from "../../utils/cordovaUtils";
 import FollowToggle from "../../components/Widgets/FollowToggle";
 import Helmet from "react-helmet";
 import LoadingWheel from "../../components/LoadingWheel";
+import { renderLog } from "../../utils/logging";
 import OrganizationCard from "../../components/VoterGuide/OrganizationCard";
 import OrganizationStore from "../../stores/OrganizationStore";
 import TwitterAccountCard from "../../components/Twitter/TwitterAccountCard";
@@ -103,17 +105,19 @@ export default class VerifyThisIsMe extends Component {
   }
 
   render () {
+    renderLog(__filename);
+
     // Manage the control over this organization voter guide
     let { candidate, organization, voter } = this.state;
     let signed_in_twitter = voter === undefined ? false : voter.signed_in_twitter;
     let signed_in_with_this_twitter_account = false;
     if (signed_in_twitter) {
-      console.log("In render, voter: ", voter);
-      console.log("this.props.params.twitter_handle: " + this.props.params.twitter_handle);
+      console.log("VerifyThisIsMe render, signed_in_twitter: ", signed_in_twitter);
+      console.log("VerifyThisIsMe this.props.params.twitter_handle: " + this.props.params.twitter_handle);
       signed_in_with_this_twitter_account = voter.twitter_screen_name.toLowerCase() === this.props.params.twitter_handle.toLowerCase();
       if (signed_in_with_this_twitter_account) {
         // If we are being asked to verify the account we are already signed into, return to the TwitterHandle page
-        console.log("signed_in_with_this_twitter_account is True");
+        console.log("VerifyThisIsMe signed_in_with_this_twitter_account is True");
         historyPush("/" + voter.twitter_screen_name);
         return LoadingWheel;
       }
@@ -123,7 +127,7 @@ export default class VerifyThisIsMe extends Component {
       // Show a loading wheel while this component's data is loading
       return LoadingWheel;
     } else if (this.state.kind_of_owner === "CANDIDATE") {
-      console.log("this.state.kind_of_owner === CANDIDATE");
+      console.log("VerifyThisIsMe this.state.kind_of_owner === CANDIDATE");
       this.props.params.we_vote_id = this.state.owner_we_vote_id;
       return <span>
         <Helmet title="Claim This Page - We Vote" />
@@ -147,8 +151,8 @@ export default class VerifyThisIsMe extends Component {
         }
       </span>;
     } else if (this.state.kind_of_owner === "ORGANIZATION") {
-      console.log("this.state.kind_of_owner === ORGANIZATION");
-      console.log("this.state.owner_we_vote_id: " + this.state.owner_we_vote_id);
+      console.log("VerifyThisIsMe this.state.kind_of_owner === ORGANIZATION");
+      console.log("VerifyThisIsMe this.state.owner_we_vote_id: " + this.state.owner_we_vote_id);
       this.props.params.we_vote_id = this.state.owner_we_vote_id;
 
       if (!organization) {
@@ -174,7 +178,7 @@ export default class VerifyThisIsMe extends Component {
           }
         </span>;
     } else if (this.state.kind_of_owner === "TWITTER_HANDLE_NOT_FOUND_IN_WE_VOTE") {
-      console.log("this.state.kind_of_owner === TWITTER_HANDLE_NOT_FOUND_IN_WE_VOTE");
+      console.log("VerifyThisIsMe this.state.kind_of_owner === TWITTER_HANDLE_NOT_FOUND_IN_WE_VOTE");
       return <div>
         <Helmet title="Claim This Page - We Vote" />
         <TwitterAccountCard {...this.state}/>

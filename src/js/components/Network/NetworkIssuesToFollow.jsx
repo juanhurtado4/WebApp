@@ -1,17 +1,18 @@
-import React, {Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import Helmet from "react-helmet";
+import { _ } from "lodash";
 import IssueActions from "../../actions/IssueActions";
 import IssueFollowToggleSquare from "../Issues/IssueFollowToggleSquare";
 import IssueStore from "../../stores/IssueStore";
 import SearchBar from "../../components/Search/SearchBar";
 
-var _ = require("lodash");
 
 export default class NetworkIssuesToFollow extends Component {
   static propTypes = {
     children: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
   };
 
   constructor (props) {
@@ -29,7 +30,7 @@ export default class NetworkIssuesToFollow extends Component {
 
   componentDidMount () {
     IssueActions.retrieveIssuesToFollow();
-    IssueActions.retrieveIssuesForVoter();
+    IssueActions.issuesRetrieve();
     this.issueStoreListener = IssueStore.addListener(this._onIssueStoreChange.bind(this));
   }
 
@@ -80,7 +81,7 @@ export default class NetworkIssuesToFollow extends Component {
         issue_image_url={issue.issue_image_url}
         edit_mode={edit_mode}
         is_following={this.state.issue_we_vote_ids_followed.includes(issue.issue_we_vote_id) || is_following}
-        grid="col-4 col-sm-2"
+        grid="col-4 col-sm-3"
       />;
     });
     var floatRight = {
@@ -92,15 +93,14 @@ export default class NetworkIssuesToFollow extends Component {
       <section className="card">
         <div className="card-main">
           <p>
-            Follow the issues you care about. By choosing the issues that matter most to
-            you, we are able to highlight the organizations that care about the same issues you do.
+            Follow the issues you care about, so we can highlight the organizations that care about the same issues you do.
             <span style={floatRight}>
               <Link to="/issues_followed" className="u-margin-left--md u-no-break">See issues you follow</Link>
             </span>
           </p>
           <SearchBar clearButton
                      searchButton
-                     placeholder="Search by name or Description"
+                     placeholder="Search by Name or Description"
                      searchFunction={this.searchFunction}
                      clearFunction={this.clearFunction}
                      searchUpdateDelayTime={0} />

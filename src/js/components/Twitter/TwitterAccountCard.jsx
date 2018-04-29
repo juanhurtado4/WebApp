@@ -1,6 +1,9 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import ParsedTwitterDescription from "../Twitter/ParsedTwitterDescription";
 import ImageHandler from "../../components/ImageHandler";
+import { renderLog } from "../../utils/logging";
+import OpenExternalWebSite from "../../utils/OpenExternalWebSite";
 import { abbreviateNumber, numberWithCommas, removeTwitterNameFromDescription } from "../../utils/textFormat";
 
 export default class TwitterAccountCard extends Component {
@@ -10,7 +13,7 @@ export default class TwitterAccountCard extends Component {
     twitter_followers_count: PropTypes.number,
     twitter_photo_url: PropTypes.string,
     twitter_user_website: PropTypes.string,
-    twitter_name: PropTypes.string
+    twitter_name: PropTypes.string,
   };
 
   constructor (props) {
@@ -18,9 +21,11 @@ export default class TwitterAccountCard extends Component {
   }
 
   render () {
+    renderLog(__filename);
     let {twitter_handle, twitter_description, twitter_followers_count,
       twitter_photo_url, twitter_user_website,
       twitter_name} = this.props;
+    let twitterUserWebsite = twitter_user_website;
 
     // If the displayName is in the twitterDescription, remove it from twitterDescription
     let displayName = twitter_name || "";
@@ -52,10 +57,13 @@ export default class TwitterAccountCard extends Component {
                 </span> :
                 null
               }
-              {twitter_user_website ?
+              {twitterUserWebsite ?
                 <span>
                   &nbsp;&nbsp;
-                  <a href={twitter_user_website} target="_blank">Website <i className="fa fa-external-link" /></a><br />
+                  <OpenExternalWebSite url={twitterUserWebsite}
+                                       target="_blank"
+                                       body={<span>Website <i className="fa fa-external-link" /></span>} />
+                  <br />
                 </span> :
                 null
               }

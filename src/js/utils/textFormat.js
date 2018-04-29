@@ -20,6 +20,15 @@ export function abbreviateNumber (num) {
   return num;
 }
 
+export function arrayContains (needle, array_haystack) {
+  // console.log("arrayContains, needle:", needle, ", haystack: ", array_haystack);
+  if (array_haystack) {
+    return array_haystack.indexOf(needle) > -1;
+  } else {
+    return false;
+  }
+}
+
 // Gives preference to the earlier entry in the incoming array
 export function arrayUnique (array) {
   var a = array.concat();
@@ -30,24 +39,6 @@ export function arrayUnique (array) {
     }
   }
   return a;
-}
-
-export function arrayContains (needle, array_haystack) {
-  // console.log("arrayContains, needle:", needle, ", haystack: ", array_haystack);
-  if (array_haystack) {
-    return array_haystack.indexOf(needle) > -1;
-  } else {
-    return false;
-  }
-}
-
-export function stringContains (needle, string_haystack) {
-  // console.log("stringContains, needle:", needle, ", haystack: ", string_haystack);
-  if (string_haystack) {
-    return string_haystack.indexOf(needle) !== -1;
-  } else {
-    return false;
-  }
 }
 
 export function calculateBallotBaseUrl (incoming_ballot_base_url, incoming_pathname) {
@@ -69,39 +60,62 @@ export function calculateBallotBaseUrl (incoming_ballot_base_url, incoming_pathn
   return ballotBaseUrl;
 }
 
-export function capitalizeString (raw_string) {
-  if (raw_string === undefined) {
+export function toTitleCase (incomingString) {
+  if (!incomingString) {
     return "";
   }
-  if (raw_string === raw_string.toUpperCase()) {
-    var lowercase = raw_string.toLowerCase();
-    return lowercase.replace( /(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); } );
-  } else {
-    return raw_string;
-  }
+  let count;
+  let array_length;
+  let str;
+  let lowers;
+  let uppers;
+  str = incomingString.replace(/([^\W_]+[^\s-]*) */g, function (txt) {
+    return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+  });
+
+  // Certain minor words should be left lowercase unless
+  // they are the first or last words in the string
+  lowers = ["A", "An", "The", "And", "But", "Or", "For", "Nor", "As", "At",
+    "By", "For", "From", "In", "Into", "Near", "Of", "On", "Onto", "To", "With"];
+  for (count = 0, array_length = lowers.length; count < array_length; count++)
+    str = str.replace(new RegExp("\\s" + lowers[count] + "\\s", "g"),
+      function (txt) {
+        return txt.toLowerCase();
+      });
+
+  // Leave state codes and measure names upper case
+  uppers = ["Us", "Ak", "Al", "Ar", "Az", "Ca", "Co", "Ct", "Dc", "De", "Fl", "Ga", "Gu", "Hi", "Ia", "Id",
+    "Il", "In", "Ks", "La", "Ma", "Md", "Me", "Mi", "Mn", "Mo", "Mp", "Ms", "Mt", "Na", "Nc", "Nd", "Ne",
+    "Nh", "Nj", "Nm", "Nv", "Ny", "Oh", "Ok", "Pa", "Pr", "Ri", "Sc", "Sd", "Tn", "Tx", "Ut", "Va", "Vi",
+    "Vt", "Wa", "Wi", "Wv", "Wy",
+    "Aa", "Bb", "Cc", "Dd", "Ee", "Ff", "Gg", "Hh", "Ii", "Jj", "Kk", "Ll", "Mm", "Nn", "Oo", "Pp",
+    "Qq", "Rr", "Ss", "Tt", "Uu", "Vv", "Ww", "Xx", "Yy", "Zz"];
+  for (count = 0, array_length = uppers.length; count < array_length; count++)
+    str = str.replace(new RegExp("\\b" + uppers[count] + "\\b", "g"),
+      uppers[count].toUpperCase());
+
+  // Finally, search and replace for pesky abbreviations
+  str = str.replace("U.s.", "U.S.");
+  str = str.replace("u.s.", "U.S.");
+
+  return str;
 }
 
-export function sentenceCaseString (raw_string_incoming) {
-  if (raw_string_incoming === undefined) {
-    return "";
-  }
-  var raw_string = raw_string_incoming.toLowerCase();
-  var string_array = raw_string.split(".");
-  var final_string = "";
-  var count;
-  var count2;
-  for (count = 0; count < string_array.length; count++) {
-     var spaceput = "";
-     var spaceCount = string_array[count].replace(/^(\s*).*$/, "$1").length;
-     string_array[count] = string_array[count].replace(/^\s+/, "");
-     var new_string = string_array[count].charAt(string_array[count]).toUpperCase() + string_array[count].slice(1);
-     for (count2 = 0; count2 < spaceCount; count2++) {
-       spaceput = spaceput + " ";
-     }
-     final_string = final_string + spaceput + new_string + ".";
-  }
-  final_string = final_string.substring(0, final_string.length - 1);
-  return final_string;
+// March 24, 2018:  Poorly named and DOESN'T seem to work.
+// It seems like it is supposed to do what the new "toTitleCase" (above) does,
+// but send this function "Now is the time" and it returns "Now is the time"
+export function capitalizeString (raw_string) {
+  // TODO Update everywhere we use capitalizeString to use toTitleCase
+  return toTitleCase(raw_string);
+  // if (raw_string === undefined) {
+  //   return "";
+  // }
+  // if (raw_string === raw_string.toUpperCase()) {
+  //   var lowercase = raw_string.toLowerCase();
+  //   return lowercase.replace( /(^|\s)([a-z])/g, function (m, p1, p2) { return p1 + p2.toUpperCase(); } );
+  // } else {
+  //   return raw_string;
+  // }
 }
 
 export function cleanArray (actual) {
@@ -112,6 +126,13 @@ export function cleanArray (actual) {
     }
   }
   return newArray;
+}
+
+export function elipses (name, mobile){
+  function cut (position){
+    return name.length < position ? name : `${name.slice(0, position)}...`;
+  }
+  return mobile ? cut(3) : cut(8);
 }
 
 export function extractTwitterHandleFromTextString (raw_string) {
@@ -129,6 +150,13 @@ export function extractTwitterHandleFromTextString (raw_string) {
   lowerCaseString = lowerCaseString.replace("/", "");
   return lowerCaseString;
 }
+
+export function isValidUrl (raw_string) {
+  let raw_string_trimmed = raw_string.trim();
+  let regexp = /^(?:(?:https?|ftp):\/\/)?(?:(?!(?:10|127)(?:\.\d{1,3}){3})(?!(?:169\.254|192\.168)(?:\.\d{1,3}){2})(?!172\.(?:1[6-9]|2\d|3[0-1])(?:\.\d{1,3}){2})(?:[1-9]\d?|1\d\d|2[01]\d|22[0-3])(?:\.(?:1?\d{1,2}|2[0-4]\d|25[0-5])){2}(?:\.(?:[1-9]\d?|1\d\d|2[0-4]\d|25[0-4]))|(?:(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)(?:\.(?:[a-z\u00a1-\uffff0-9]-*)*[a-z\u00a1-\uffff0-9]+)*(?:\.(?:[a-z\u00a1-\uffff]{2,})))(?::\d{2,5})?(?:\/\S*)?$/;
+  return regexp.test(raw_string_trimmed);
+}
+
 /**
  * Overwrites obj1's values with obj2's and adds obj2's if non existent in obj1
  * Duplicate values in the second object will overwrite those in the first
@@ -178,6 +206,8 @@ export function removeTwitterNameFromDescription (displayName, twitterDescriptio
 }
 
 export function returnFirstXWords (originalString, numberOfWordsToReturn) {
+  if (!originalString) return "";
+
   var wordsArray = originalString.split(" ");
   var xWords = "";
   for (var i = 0; i < wordsArray.length; i++) {
@@ -192,6 +222,29 @@ export function returnFirstXWords (originalString, numberOfWordsToReturn) {
   return xWords;
 }
 
+export function sentenceCaseString (raw_string_incoming) {
+  if (raw_string_incoming === undefined) {
+    return "";
+  }
+  var raw_string = raw_string_incoming.toLowerCase();
+  var string_array = raw_string.split(".");
+  var final_string = "";
+  var count;
+  var count2;
+  for (count = 0; count < string_array.length; count++) {
+     var spaceput = "";
+     var spaceCount = string_array[count].replace(/^(\s*).*$/, "$1").length;
+     string_array[count] = string_array[count].replace(/^\s+/, "");
+     var new_string = string_array[count].charAt(string_array[count]).toUpperCase() + string_array[count].slice(1);
+     for (count2 = 0; count2 < spaceCount; count2++) {
+       spaceput = spaceput + " ";
+     }
+     final_string = final_string + spaceput + new_string + ".";
+  }
+  final_string = final_string.substring(0, final_string.length - 1);
+  return final_string;
+}
+
 export function shortenText (incoming_string, maximum_length){
   let maximum_length_int = parseInt(maximum_length, 10);
   let crop_length_to_make_room_for_ellipses = maximum_length_int - 2;
@@ -201,12 +254,19 @@ export function shortenText (incoming_string, maximum_length){
   return incoming_string.length < maximum_length_int ? incoming_string : `${incoming_string.slice(0, crop_length_to_make_room_for_ellipses)}...`;
 }
 
-export function elipses (name, mobile){
-  function cut (position){
-    return name.length < position ? name : `${name.slice(0, position)}...`;
+export function stringContains (needle, string_haystack) {
+  // console.log("stringContains, needle:", needle, ", haystack: ", string_haystack);
+  if (string_haystack) {
+    return string_haystack.indexOf(needle) !== -1;
+  } else {
+    return false;
   }
-  return mobile ? cut(3) : cut(8);
 }
 
 export let youtube_reg = /(http:|https:)?\/\/(www\.)?(youtube.com|youtu.be)\/(watch)?(\?v=)?(\S+)?/;
 export let vimeo_reg = /http(s)?:\/\/(www\.)?vimeo.com\/(\d+)(\/)?(#.*)?/;
+
+// This must be placed after declaration of stringContains
+export function isProperlyFormattedVoterGuideWeVoteId (voterGuideWeVoteId) {
+  return voterGuideWeVoteId && stringContains("wv", voterGuideWeVoteId) && stringContains("vg", voterGuideWeVoteId);
+}

@@ -1,6 +1,8 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import Helmet from "react-helmet";
 import LoadingWheel from "../../components/LoadingWheel";
+import { renderLog } from "../../utils/logging";
 import VoterPositionItem from "../../components/VoterGuide/VoterPositionItem";
 
 export default class GuidePositionListForVoter extends Component {
@@ -19,7 +21,8 @@ export default class GuidePositionListForVoter extends Component {
   }
 
   render () {
-    if (!this.state.voter){
+    renderLog(__filename);
+    if (!this.state.voter) {
       return <div>{LoadingWheel}</div>;
     }
 

@@ -1,13 +1,14 @@
 import React, { Component } from "react";
-import {Button} from "react-bootstrap";
+import { Button } from "react-bootstrap";
 import Helmet from "react-helmet";
 import AnalyticsActions from "../../actions/AnalyticsActions";
 import BrowserPushMessage from "../../components/Widgets/BrowserPushMessage";
 import FacebookActions from "../../actions/FacebookActions";
 import FacebookStore from "../../stores/FacebookStore";
-import { historyPush } from "../../utils/cordovaUtils";
+import { historyPush, isCordova, isWebApp } from "../../utils/cordovaUtils";
 import FacebookSignIn from "../../components/Facebook/FacebookSignIn";
 import LoadingWheel from "../../components/LoadingWheel";
+import { renderLog } from "../../utils/logging";
 import TwitterActions from "../../actions/TwitterActions";
 import TwitterSignIn from "../../components/Twitter/TwitterSignIn";
 import VoterActions from "../../actions/VoterActions";
@@ -44,9 +45,9 @@ export default class SignIn extends Component {
   // componentWillMount is used in WebApp
   componentDidMount () {
     // console.log("SignIn componentDidMount");
-    this._onVoterStoreChange();
+    this.onVoterStoreChange();
     this.facebookListener = FacebookStore.addListener(this._onFacebookChange.bind(this));
-    this.voterStoreListener = VoterStore.addListener(this._onVoterStoreChange.bind(this));
+    this.voterStoreListener = VoterStore.addListener(this.onVoterStoreChange.bind(this));
     AnalyticsActions.saveActionAccountPage(VoterStore.election_id());
   }
 
@@ -57,7 +58,7 @@ export default class SignIn extends Component {
     this.timer = null;
   }
 
-  _onVoterStoreChange () {
+  onVoterStoreChange () {
     if (VoterStore.isVoterFound() && !this.state.initial_name_loaded) {
       this.setState({
         first_name: VoterStore.getFirstName(),
@@ -140,8 +141,8 @@ export default class SignIn extends Component {
     }
   }
 
-
   render () {
+    renderLog(__filename);
     if (!this.state.voter) {
       return LoadingWheel;
     }
@@ -162,7 +163,8 @@ export default class SignIn extends Component {
       if (this.state.voter.signed_in_facebook && !this.state.voter.signed_in_twitter) {
         your_account_title = "Have Twitter Too?";
         your_account_explanation = "By adding your Twitter account to your We Vote profile, you get access to the voter guides of everyone you follow.";
-      } else if (this.state.voter.signed_in_twitter && !this.state.voter.signed_in_facebook) {
+      } else if (this.state.voter.signed_in_twitter && isWebApp() && !this.state.voter.signed_in_facebook) {
+        /* February 2018, Facebook and Magic Email disabled for Cordova */
         your_account_title = "Have Facebook Too?";
         your_account_explanation = "By adding Facebook to your We Vote profile, it is easier to invite friends.";
       }
@@ -171,8 +173,8 @@ export default class SignIn extends Component {
     return <div className="">
       <Helmet title={page_title} />
       <BrowserPushMessage incomingProps={this.props} />
-      <div className="card">
-        <div className="card-main">
+      <div className="">
+        <div className="">
           {this.state.voter.signed_in_twitter && this.state.voter.signed_in_facebook ?
             null :
             <h1 className="h3">{this.state.voter.is_signed_in ? <span>{your_account_title}</span> : null}</h1>
@@ -187,10 +189,11 @@ export default class SignIn extends Component {
             <div>
               {this.state.voter.signed_in_twitter ?
                 null :
-                <TwitterSignIn />
+                <TwitterSignIn className="btn btn-social btn-lg btn-twitter" />
               }
               <span>&nbsp;</span>
-              {this.state.voter.signed_in_facebook ?
+              {/* February 2018, Facebook and Magic Email disabled for Cordova */}
+              {this.state.voter.signed_in_facebook || isCordova() ?
                 null :
                 <FacebookSignIn />
               }
@@ -271,7 +274,8 @@ export default class SignIn extends Component {
                     </span> :
                     null
                   }
-                  {this.state.voter.signed_in_facebook ?
+                  {/* February 2018, Facebook and Magic Email disabled for Cordova */}
+                  {this.state.voter.signed_in_facebook && isWebApp() ?
                     <span>
                       <span className="btn btn-social-icon btn-lg btn-facebook">
                         <span className="fa fa-facebook" />
@@ -280,7 +284,8 @@ export default class SignIn extends Component {
                     </span> :
                     null
                   }
-                  {this.state.voter.signed_in_with_email ?
+                  {/* February 2018, Facebook and Magic Email disabled for Cordova */}
+                  {this.state.voter.signed_in_with_email && isWebApp() ?
                     <span>
                       <span className="btn btn-warning btn-lg">
                       <span className="glyphicon glyphicon-envelope" /></span>

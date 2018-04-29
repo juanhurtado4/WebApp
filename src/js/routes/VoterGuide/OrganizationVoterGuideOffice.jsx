@@ -1,9 +1,11 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import OrganizationVoterGuideCandidateList from "../../components/VoterGuide/OrganizationVoterGuideCandidateList";
 import { capitalizeString } from "../../utils/textFormat";
 import Helmet from "react-helmet";
 import AnalyticsActions from "../../actions/AnalyticsActions";
 import LoadingWheel from "../../components/LoadingWheel";
+import { renderLog } from "../../utils/logging";
 import OfficeActions from "../../actions/OfficeActions";
 import OfficeItem from "../../components/Ballot/OfficeItem";
 import OfficeStore from "../../stores/OfficeStore";
@@ -40,7 +42,7 @@ export default class OrganizationVoterGuideOffice extends Component {
 
     AnalyticsActions.saveActionOffice(VoterStore.election_id(), this.props.params.office_we_vote_id);
     SearchAllActions.exitSearch();
-    console.log("OrganizationVoterGuideOffice, organization_we_vote_id: ", this.props.params.organization_we_vote_id);
+    // console.log("OrganizationVoterGuideOffice, organization_we_vote_id: ", this.props.params.organization_we_vote_id);
   }
 
   componentWillReceiveProps (nextProps) {
@@ -63,12 +65,13 @@ export default class OrganizationVoterGuideOffice extends Component {
     this.officeStoreListener.remove();
   }
 
-  _onOfficeStoreChange (){
+  _onOfficeStoreChange () {
     var office = OfficeStore.getOffice(this.state.office_we_vote_id);
     this.setState({ office: office });
   }
 
   render () {
+    renderLog(__filename);
     var { office } = this.state;
 
     if (!office || !office.ballot_item_display_name){

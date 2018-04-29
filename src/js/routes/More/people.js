@@ -1,4 +1,5 @@
-const webAppConfig = require("../../config");
+import webAppConfig from "../../config";
+
 if (window.cordova) {  // Static constants are initialized before the app starts
   webAppConfig.IS_CORDOVA = true;
 }
@@ -47,10 +48,17 @@ export const weVoteBoard = [ {
       "Managed large software projects for companies like Disney and over 60 nonprofits."
     ]
   }, {
+    name: "Alicia Kolar Prevost",
+    image: photoPath + "Alicia_Prevost-200x200.jpg",
+    title: [
+      "Senior Adviser",
+      "Led Defend Our Future (Environmental Defense Fund), mobilizing young people around climate action. PhD in political science, American University."
+    ]
+  }, {
     name: "Barbara Shannon",
     image: photoPath + "Barbara_Shannon-200x200.jpg",
     title: [
-      "Co-Founder / CTO & c3 + c4 Board Member",
+      "c3 Board Member",
       "Adviser to entrepreneurs and C-level Fortune 500 leaders. MBA The Wharton School."
     ]
   }, {
@@ -85,16 +93,10 @@ export const weVoteBoard = [ {
 ];
 
 export const weVoteStaff = [ {
-    name: "Alicia Prevost",
-    image: photoPath + "Alicia_Prevost-200x200.jpg",
-    title: [
-      "Executive Director",
-    ]
-  }, {
     name: "Dale John McGrew",
     image: photoPath + "Dale_McGrew-200x200.jpg",
     title: [
-      "Co-Founder / CTO"
+      "Executive Director / Co-Founder / CTO"
     ]
   }, {
     name: "Rohan Bhambhoria",
@@ -145,6 +147,12 @@ export const weVoteStaff = [ {
       "Sr. Software Engineer"
     ]
   }, {
+    name: "Elizabeth Janeczko",
+    image: photoPath + "Elizabeth_Janeczko-200x200.jpg",
+    title: [
+      "Sr. Writer & Content Marketing Manager"
+    ]
+  }, {
     name: "Judy Johnson",
     image: photoPath + "Judy_Johnson-200x200.jpg",
     title: [
@@ -161,6 +169,12 @@ export const weVoteStaff = [ {
     image: photoPath + "Ciero_Kilpatrick-200x200.jpg",
     title: [
       "User Experience Design Intern"
+    ]
+  }, {
+    name: "Michael Kushman",
+    image: photoPath + "Michael_Kushman-200x200.jpg",
+    title: [
+      "Product Marketing"
     ]
   }, {
     name: "Edward Ly",
@@ -277,6 +291,21 @@ export const teamOfVolunteers = [ {
     name: "Steve Podell",
     title: "Oakland, CA",
   }, {
+    name: "Edward Ly",
+    title: "Gresham, OR",
+  }, {
+    name: "Irene Florez",
+    title: "San Francisco, CA",
+  }, {
+    name: "Yuanhsin Chang",
+    title: "San Francisco, CA",
+  }, {
+    name: "Mansi Desai",
+    title: "San Francisco, CA",
+  }, {
+    name: "Neil Dullaghan",
+    title: "San Francisco, CA",
+  }, {
     name: "Bharath D N Reddy",
     title: "Mountain View, CA",
   }, {
@@ -307,14 +336,17 @@ export const teamOfVolunteers = [ {
     name: "Matt Holford",
     title: "New York, NY",
   }, {
-    name: "Edward Ly",
-    title: "Gresham, OR",
+    name: "Michael Kushman",
+    title: "San Francisco, CA",
   }, {
-    name: "YuanHsin Chang",
+    name: "Kathryn Lindquist",
     title: "San Francisco, CA",
   }, {
     name: "Ciero Kilpatrick",
     title: "Washington, DC",
+  }, {
+    name: "Elizabeth Janeczko",
+    title: "Madison, WI",
   }, {
     name: "Eric Ogawa",
     title: "San Francisco, CA",
@@ -349,9 +381,6 @@ export const teamOfVolunteers = [ {
     name: "Judy Johnson",
     title: "Oakland, CA",
   }, {
-    name: "Irene Florez",
-    title: "San Francisco, CA",
-  }, {
     name: "Udi Davidovich",
     title: "Walnut Creek, CA",
   }, {
@@ -364,10 +393,10 @@ export const teamOfVolunteers = [ {
     name: "Paul A. \"Dash\" McLean",
     title: "E. Palo Alto, CA",
   }, {
-    name: "Mansi Desai",
+    name: "Fernando Mendoza",
     title: "San Francisco, CA",
   }, {
-    name: "Neil Dullaghan",
+    name: "Andrew Roy Chen",
     title: "San Francisco, CA",
   }, {
     name: "Eric Olivera",
@@ -381,6 +410,15 @@ export const teamOfVolunteers = [ {
   }, {
     name: "Robin Braverman",
     title: "Walnut Creek, CA",
+  }, {
+    name: "Grant Michael Palmer",
+    title: "Oakland, CA",
+  }, {
+    name: "Alexandra Deas",
+    title: "San Mateo, CA",
+  }, {
+    name: "Mario A. Rodríguez Jaén",
+    title: "Alexandria, VA",
   }, {
     name: "Mike McConnell",
     title: "San Francisco, CA",
@@ -402,6 +440,12 @@ export const teamOfVolunteers = [ {
   }, {
     name: "Anat Shenker-Osorio",
     title: "Oakland, CA",
+  }, {
+    name: "Olivia Drummond",
+    title: "Washington, DC",
+  }, {
+    name: "Steve Cohen",
+    title: "Berkeley, CA",
   }, {
     name: "Kad Smith",
     title: "Berkeley, CA",
@@ -438,6 +482,9 @@ export const teamOfVolunteers = [ {
   }, {
     name: "Josh Levinger",
     title: "Oakland, CA",
+  }, {
+    name: "Chi Lu",
+    title: "San Francisco, CA",
   }, {
     name: "Leslie Castellanos",
     title: "San Francisco, CA",

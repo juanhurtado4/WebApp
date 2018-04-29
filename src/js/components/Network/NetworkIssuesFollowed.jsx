@@ -1,9 +1,10 @@
-import React, {Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import IssueActions from "../../actions/IssueActions";
-// import IssueFollowToggle from "../Issues/IssueFollowToggle";
 import IssueFollowToggleSquare from "../Issues/IssueFollowToggleSquare";
 import IssueStore from "../../stores/IssueStore";
+import { renderLog } from "../../utils/logging";
 
 
 export default class NetworkIssuesFollowed extends Component {
@@ -21,7 +22,7 @@ export default class NetworkIssuesFollowed extends Component {
   }
 
   componentDidMount () {
-    IssueActions.retrieveIssuesForVoter();
+    IssueActions.issuesRetrieve();
     this.issueStoreListener = IssueStore.addListener(this._onIssueStoreChange.bind(this));
   }
 
@@ -53,10 +54,12 @@ export default class NetworkIssuesFollowed extends Component {
   }
 
   render () {
-    var issue_list = [];
+    renderLog(__filename);
+    let issue_list = [];
     if (this.state.issues_followed) {
       issue_list = this.state.issues_followed;
     }
+
     const ISSUES_TO_SHOW = 6;
 
     let is_following = true;

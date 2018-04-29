@@ -1,10 +1,12 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import { OverlayTrigger, Popover } from "react-bootstrap";
 import FacebookFriendTinyDisplay from "../../components/Connect/FacebookFriendTinyDisplay";
 import FacebookFriendCard from "../../components/Connect/FacebookFriendCard";
 import FacebookStore from "../../stores/FacebookStore";
 import FacebookActions from "../../actions/FacebookActions";
+import { renderLog } from "../../utils/logging";
 
 export default class FacebookFriendsDisplay extends Component {
 
@@ -74,6 +76,7 @@ export default class FacebookFriendsDisplay extends Component {
   }
 
   render () {
+    renderLog(__filename);
       if (this.state.facebook_invitable_friends_list === undefined) {
         return null;
       }

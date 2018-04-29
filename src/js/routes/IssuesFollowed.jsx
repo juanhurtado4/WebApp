@@ -1,18 +1,18 @@
-import React, {Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import Helmet from "react-helmet";
+import { _ } from "lodash";
 import IssueActions from "../actions/IssueActions";
 import IssueFollowToggleSquare from "../components/Issues/IssueFollowToggleSquare";
 import IssueStore from "../stores/IssueStore";
+import { renderLog } from "../utils/logging";
 import SearchBar from "../components/Search/SearchBar";
-
-var _ = require("lodash");
-
 
 export default class IssuesFollowed extends Component {
   static propTypes = {
     children: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
   };
 
   constructor (props) {
@@ -28,7 +28,7 @@ export default class IssuesFollowed extends Component {
   }
 
   componentDidMount () {
-    IssueActions.retrieveIssuesForVoter();
+    IssueActions.issuesRetrieve();
     this.issueStoreListener = IssueStore.addListener(this._onIssueStoreChange.bind(this));
   }
 
@@ -68,6 +68,7 @@ export default class IssuesFollowed extends Component {
   }
 
   render () {
+    renderLog(__filename);
     var issue_list = [];
     if (this.state.issues_followed) {
       issue_list = this.state.issues_followed;
@@ -118,13 +119,10 @@ export default class IssuesFollowed extends Component {
                      searchUpdateDelayTime={0} />
           <br />
           <div className="network-issues-list voter-guide-list card">
-            <div className="card-child__list-group">
-              {
-                issue_list.length ?
-                  issue_list_for_display :
-                  <h4 className="intro-modal__default-text">You are not following any issues yet.</h4>
-              }
-            </div>
+            { issue_list.length ?
+              issue_list_for_display :
+              <h4 className="intro-modal__default-text">You are not following any issues yet.</h4>
+            }
           </div>
           <Link className="pull-left" to="/issues_to_follow">Find Issues to follow</Link>
           <br />

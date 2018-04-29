@@ -1,18 +1,18 @@
-import React, {Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
+import { _ } from "lodash";
 import Helmet from "react-helmet";
 import IssueActions from "../actions/IssueActions";
 import IssueFollowToggleSquare from "../components/Issues/IssueFollowToggleSquare";
 import IssueStore from "../stores/IssueStore";
+import { renderLog } from "../utils/logging";
 import SearchBar from "../components/Search/SearchBar";
-
-var _ = require("lodash");
-
 
 export default class IssuesToFollow extends Component {
   static propTypes = {
     children: PropTypes.object,
-    history: PropTypes.object
+    history: PropTypes.object,
   };
 
   constructor (props) {
@@ -50,6 +50,7 @@ export default class IssuesToFollow extends Component {
   }
 
   render () {
+    renderLog(__filename);
     var issue_list = [];
     if (this.state.issues_to_follow) {
       issue_list = this.state.issues_to_follow;
@@ -85,8 +86,7 @@ export default class IssuesToFollow extends Component {
         <div className="card-main">
           <h1 className="h1">Issues You Can Follow</h1>
           <p>
-            Follow the issues you care about. By choosing the issues that matter most to
-            you, we are able to highlight the organizations that care about the same issues you do.
+            Follow the issues you care about, so we can highlight the organizations that care about the same issues you do.
           </p>
           <SearchBar clearButton
                      searchButton
@@ -96,13 +96,10 @@ export default class IssuesToFollow extends Component {
                      searchUpdateDelayTime={0} />
           <br />
           <div className="network-issues-list voter-guide-list card">
-            <div className="card-child__list-group">
-              {
-                this.state.issues_to_follow && this.state.issues_to_follow.length ?
-                  issue_list_for_display :
-                  null
-              }
-            </div>
+            { this.state.issues_to_follow && this.state.issues_to_follow.length ?
+              issue_list_for_display :
+              null
+            }
           </div>
           <Link className="pull-left" to="/issues_followed">Issues you are following</Link>
           <br />

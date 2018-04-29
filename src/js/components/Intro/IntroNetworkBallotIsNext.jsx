@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import cookies from "../../utils/cookies";
 import { historyPush, isCordova } from "../../utils/cordovaUtils";
 import Helmet from "react-helmet";
+import { renderLog } from "../../utils/logging";
 
 export default class IntroNetworkBallotIsNext extends Component {
 
@@ -27,14 +28,13 @@ export default class IntroNetworkBallotIsNext extends Component {
   }
 
   render () {
-    return <div className="intro-story intro-story__background background--image3"
-                style={isCordova() ? { backgroundImage: "url(./img/global/intro-story/slide3-historic-place-698x600.jpg)" } : null} >
+    renderLog(__filename);
+    return <div className="intro-story intro-story__background background--image5"
+                style={isCordova() ? { backgroundImage: "url(./img/global/intro-story/slide5-flagpole-698x600.jpg)" } : null} >
       <Helmet title="See Your Ballot - We Vote" />
       <div className="intro-story__h1--alt">We Vote</div>
       <div ref="header2" className="intro-story__h2 intro-story__padding-top">
-        Ready to <strong>vote your values</strong>?<br />
-        Research what's on your ballot<br />
-        and invite your friends.
+        Ready to <strong>vote your values</strong>?
       </div>
       <div ref="header2" className="intro-story__h2">On the next screen, you'll see<br />
        the next election<br />

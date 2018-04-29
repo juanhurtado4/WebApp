@@ -1,10 +1,12 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import BookmarkToggle from "../Bookmarks/BookmarkToggle";
 import CandidateStore from "../../stores/CandidateStore";
 import { historyPush } from "../../utils/cordovaUtils";
 import ImageHandler from "../ImageHandler";
 import ItemSupportOpposeRaccoon from "../Widgets/ItemSupportOpposeRaccoon";
+import { renderLog } from "../../utils/logging";
 import OfficeNameText from "../Widgets/OfficeNameText";
 import ParsedTwitterDescription from "../Twitter/ParsedTwitterDescription";
 import SupportStore from "../../stores/SupportStore";
@@ -30,7 +32,7 @@ export default class CandidateItem extends Component {
     twitter_followers_count: PropTypes.number,
     twitter_handle: PropTypes.string,
     we_vote_id: PropTypes.string.isRequired, // This is the candidate_we_vote_id
-    link_to_ballot_item_page: PropTypes.bool
+    link_to_ballot_item_page: PropTypes.bool,
   };
 
   constructor (props) {
@@ -82,7 +84,7 @@ export default class CandidateItem extends Component {
   }
 
   onSupportStoreChange () {
-    var supportProps = SupportStore.get(this.state.candidate_we_vote_id);
+    let supportProps = SupportStore.get(this.state.candidate_we_vote_id);
     if (supportProps !== undefined) {
       this.setState({ supportProps: supportProps, transitioning: false });
     }
@@ -111,6 +113,7 @@ export default class CandidateItem extends Component {
   }
 
   render () {
+    renderLog(__filename);
     let {
       ballot_item_display_name,
       party,

@@ -1,6 +1,8 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import ImageHandler from "../ImageHandler";
+import { renderLog } from "../../utils/logging";
 
 // OrganizationDisplayForListCompressed is used by OpinionsFollowedListCompressed for viewing organizations
 export default class OrganizationDisplayForListCompressed extends Component {
@@ -14,7 +16,7 @@ export default class OrganizationDisplayForListCompressed extends Component {
   };
 
   render () {
-    // console.log("OrganizationDisplayForListCompressed render");
+    renderLog(__filename);
     if (this.props.organization_we_vote_id === undefined) {
       // console.log("OrganizationDisplayForList this.props.organization_we_vote_id === undefined");
       return null;

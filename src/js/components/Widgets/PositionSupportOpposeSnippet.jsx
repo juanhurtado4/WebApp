@@ -1,8 +1,12 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import ReactPlayer from "react-player";
 import { cordovaDot } from "../../utils/cordovaUtils";
+import { renderLog } from "../../utils/logging";
+import OpenExternalWebSite from "../../utils/OpenExternalWebSite";
 import ReadMore from "../../components/Widgets/ReadMore";
-import {vimeo_reg, youtube_reg} from "../../utils/textFormat";
+import { vimeo_reg, youtube_reg } from "../../utils/textFormat";
+
 // import ViewSourceModal from "../../components/Widgets/ViewSourceModal";
 
 export default class PositionSupportOpposeSnippet extends Component {
@@ -16,13 +20,13 @@ export default class PositionSupportOpposeSnippet extends Component {
     speaker_display_name: PropTypes.string,
     statement_text: PropTypes.string,
     stance_display_off: PropTypes.bool,
-    comment_text_off: PropTypes.bool
+    comment_text_off: PropTypes.bool,
   };
 
   componentWillMount () {
     this.setState({
       showViewSourceModal: false,
-      transitioning: false
+      transitioning: false,
     });
   }
 
@@ -37,12 +41,14 @@ export default class PositionSupportOpposeSnippet extends Component {
   }
 
   render () {
+    renderLog(__filename);
     let stance_icon_src;
     let className;
     let alt;
     let actorSupportsBallotItemLabel;
     let ballotItemIsSupportedByActorLabel;
     let { is_looking_at_self, more_info_url } = this.props;
+    let moreInfoUrl = more_info_url;
     let statement_text = this.props.statement_text || "";
     let statement_text_html = <ReadMore text_to_display={statement_text} />;
     // onViewSourceClick is onClick function for view source modal in mobile browser
@@ -70,7 +76,7 @@ export default class PositionSupportOpposeSnippet extends Component {
       statement_text_html = <ReadMore text_to_display={statement_text_no_url} />;
     }
 
-    if (this.props.is_support){
+    if (this.props.is_support) {
       stance_icon_src = cordovaDot("/img/global/svg-icons/thumbs-up-color-icon.svg");
       className = "explicit-position__icon";
       alt = "Supports";
@@ -86,19 +92,22 @@ export default class PositionSupportOpposeSnippet extends Component {
       // We shouldn't be here. Do not display position information. See instead PositionInformationOnlySnippet.jsx
       return <span />;
     }
+
     let stance_display_off = false;
     if (this.props.stance_display_off !== undefined) {
       stance_display_off = this.props.stance_display_off ? true : false;
     }
+
     let comment_text_off = false;
     if (this.props.comment_text_off !== undefined) {
       comment_text_off = this.props.comment_text_off ? true : false;
     }
-    if (more_info_url) {
-      if (more_info_url.toLowerCase().startsWith("http")) {
-        more_info_url = more_info_url;
+
+    if (moreInfoUrl) {
+      if (moreInfoUrl.toLowerCase().startsWith("http")) {
+        moreInfoUrl = moreInfoUrl;
       } else {
-        more_info_url = "http://" + more_info_url;
+        moreInfoUrl = "http://" + moreInfoUrl;
       }
     }
 
@@ -121,19 +130,18 @@ export default class PositionSupportOpposeSnippet extends Component {
           </span>
           { comment_text_off ? null :
             <span>
-              <span>{statement_text_html}</span>
+              <span className="u-wrap-links hidden-print">{statement_text_html}</span>
               {/* if there's an external source for the explicit position/endorsement, show it */}
               { video_url ?
                 <ReactPlayer className="explicit-position__media-player" url={`${video_url}`} width="100%" height="100%"/> :
                 null }
-              {more_info_url ?
+              {moreInfoUrl ?
                 <div className="hidden-xs">
                   {/* default: open in new tab*/}
-                  <a href={more_info_url}
-                     target="_blank"
-                     className="u-gray-mid">
-                    view source <i className="fa fa-external-link" aria-hidden="true" />
-                  </a>
+                  <OpenExternalWebSite url={moreInfoUrl}
+                                       target="_blank"
+                                       className="u-gray-mid"
+                                       body={<span>view source <i className="fa fa-external-link" aria-hidden="true" /></span>} />
                   {/* link for mobile browser: open in bootstrap modal */}
                   {/*
                   <a onClick={onViewSourceClick}>
@@ -147,7 +155,7 @@ export default class PositionSupportOpposeSnippet extends Component {
       }
       {/*<ViewSourceModal show={this.state.showViewSourceModal}
                      onHide={this.closeViewSourceModal.bind(this)}
-                     url={this.props.more_info_url} /> */}
+                     url={this.props.moreInfoUrl} /> */}
     </div>;
   }
 }

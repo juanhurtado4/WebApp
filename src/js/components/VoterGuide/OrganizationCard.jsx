@@ -1,12 +1,15 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import FollowToggle from "../../components/Widgets/FollowToggle";
 import ImageHandler from "../../components/ImageHandler";
 import LoadingWheel from "../../components/LoadingWheel";
+import { renderLog } from "../../utils/logging";
 import ParsedTwitterDescription from "../Twitter/ParsedTwitterDescription";
 import PositionRatingSnippet from "../../components/Widgets/PositionRatingSnippet";
 import PositionInformationOnlySnippet from "../../components/Widgets/PositionInformationOnlySnippet";
 import PositionSupportOpposeSnippet from "../../components/Widgets/PositionSupportOpposeSnippet";
+import OpenExternalWebSite from "../../utils/OpenExternalWebSite";
 import OrganizationActions from "../../actions/OrganizationActions";
 import OrganizationStore from "../../stores/OrganizationStore";
 import { removeTwitterNameFromDescription } from "../../utils/textFormat";
@@ -20,6 +23,7 @@ export default class OrganizationCard extends Component {
     organization: PropTypes.object.isRequired,
     turnOffDescription: PropTypes.bool,
     turnOffLogo: PropTypes.bool,
+    turnOffTwitterHandle: PropTypes.bool,
   };
 
   constructor (props) {
@@ -96,13 +100,15 @@ export default class OrganizationCard extends Component {
   }
 
   render () {
+    renderLog(__filename);
     if (!this.state.organization_we_vote_id.length){
       return <div className="card-popover__width--minimum">{LoadingWheel}</div>;
     }
 
     const {organization_twitter_handle, twitter_description,
       organization_photo_url_large, organization_website,
-      organization_name} = this.props.organization; // twitter_followers_count,
+      organization_name} = this.props.organization; // twitter_followers_count
+    let organizationWebsite = organization_website;
 
     // If the displayName is in the twitterDescription, remove it from twitterDescription
     let displayName = organization_name ? organization_name : "";
@@ -131,7 +137,10 @@ export default class OrganizationCard extends Component {
         {this.props.turnOffLogo ?
           null :
           <Link to={voterGuideLink} className="u-no-underline">
-            <ImageHandler imageUrl={organization_photo_url_large} className="card-main__org-avatar" sizeClassName="icon-lg "/>
+            <ImageHandler imageUrl={organization_photo_url_large}
+                          className="card-main__org-avatar"
+                          hidePlaceholder
+                          sizeClassName="icon-lg "/>
           </Link> }
         {this.props.followToggleOn ?
           <div className="u-margin-top--md">
@@ -155,7 +164,7 @@ export default class OrganizationCard extends Component {
         }
         { !this.props.turnOffDescription ?
           <div>
-            { organization_twitter_handle ?
+            { organization_twitter_handle && !this.props.turnOffTwitterHandle ?
               <span>@{organization_twitter_handle}&nbsp;&nbsp;</span> :
               null
             }
@@ -167,12 +176,16 @@ export default class OrganizationCard extends Component {
               null
             */}
             &nbsp;&nbsp;
-            { organization_website ?
-              <span><a href={organization_website} target="_blank">Website <i className="fa fa-external-link" /></a></span> :
-              null }
+            { organizationWebsite ?
+              <span>
+                <OpenExternalWebSite url={organizationWebsite}
+                                     target="_blank"
+                                     body={<span>Website <i className="fa fa-external-link" /></span>} />
+              </span> : null
+            }
             {/*5 of your friends follow Organization Name<br />*/}
-          </div> :
-          null }
+          </div> : null
+        }
       </div>
     </div>;
   }

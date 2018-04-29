@@ -1,14 +1,17 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
-import { historyPush } from "../../utils/cordovaUtils";
-import VoterGuideStore from "../../stores/VoterGuideStore";
-import ItemActionBar from "../Widgets/ItemActionBar";
-import ItemPositionStatementActionBar from "../Widgets/ItemPositionStatementActionBar";
-import ItemSupportOpposeCounts from "../Widgets/ItemSupportOpposeCounts";
-import ItemTinyOpinionsToFollow from "../VoterGuide/ItemTinyOpinionsToFollow";
 import BookmarkToggle from "../Bookmarks/BookmarkToggle";
+import { historyPush } from "../../utils/cordovaUtils";
+// import ItemActionBar from "../Widgets/ItemActionBar";
+// import ItemPositionStatementActionBar from "../Widgets/ItemPositionStatementActionBar";
+// import ItemSupportOpposeCounts from "../Widgets/ItemSupportOpposeCounts";
+import ItemSupportOpposeRaccoon from "../Widgets/ItemSupportOpposeRaccoon";
+// import ItemTinyOpinionsToFollow from "../VoterGuide/ItemTinyOpinionsToFollow";
+import { renderLog } from "../../utils/logging";
 import SupportStore from "../../stores/SupportStore";
 import { capitalizeString } from "../../utils/textFormat";
+import VoterGuideStore from "../../stores/VoterGuideStore";
 
 
 export default class MeasureItemCompressed extends Component {
@@ -57,34 +60,31 @@ export default class MeasureItemCompressed extends Component {
       transitioning: false,
     });
   }
+
   render () {
+    renderLog(__filename);
     let { ballot_item_display_name, measure_subtitle, measure_text, we_vote_id } = this.props;
     let measure_we_vote_id = we_vote_id;
     measure_subtitle = capitalizeString(measure_subtitle);
     ballot_item_display_name = capitalizeString(ballot_item_display_name);
 
-    let measureGuidesList = VoterGuideStore.getVoterGuidesToFollowForBallotItemId(measure_we_vote_id);
+    // let measureGuidesList = VoterGuideStore.getVoterGuidesToFollowForBallotItemId(measure_we_vote_id);
 
-    let measure_for_modal = {
-      ballot_item_display_name: ballot_item_display_name,
-      voter_guides_to_follow_for_ballot_item_id: measureGuidesList,
-      kind_of_ballot_item: this.props.kind_of_ballot_item,
-      link_to_ballot_item_page: this.props.link_to_ballot_item_page,
-      measure_subtitle: measure_subtitle,
-      measure_text: this.props.measure_text,
-      measure_url: this.props.measure_url,
-      we_vote_id: measure_we_vote_id,
-      position_list: this.props.position_list
-    };
+    // let measure_for_modal = {
+    //   ballot_item_display_name: ballot_item_display_name,
+    //   voter_guides_to_follow_for_ballot_item_id: measureGuidesList,
+    //   kind_of_ballot_item: this.props.kind_of_ballot_item,
+    //   link_to_ballot_item_page: this.props.link_to_ballot_item_page,
+    //   measure_subtitle: measure_subtitle,
+    //   measure_text: this.props.measure_text,
+    //   measure_url: this.props.measure_url,
+    //   we_vote_id: measure_we_vote_id,
+    //   position_list: this.props.position_list,
+    // };
 
-    let is_support = false;
-    let is_oppose = false;
-    let voter_statement_text = false;
-    if (this.state.supportProps !== undefined) {
-      is_support = this.state.supportProps.is_support;
-      is_oppose = this.state.supportProps.is_oppose;
-      voter_statement_text = this.state.supportProps.voter_statement_text;
-    }
+    let measureSupportStore = SupportStore.get(measure_we_vote_id);
+    let organizationsToFollowSupport = VoterGuideStore.getVoterGuidesToFollowForBallotItemIdSupports(measure_we_vote_id);
+    let organizationsToFollowOppose = VoterGuideStore.getVoterGuidesToFollowForBallotItemIdOpposes(measure_we_vote_id);
 
     return <div className="card-main measure-card">
       <a name={measure_we_vote_id} />
@@ -106,7 +106,7 @@ export default class MeasureItemCompressed extends Component {
             ballot_item_display_name
           }
         </h2>
-        <BookmarkToggle we_vote_id={measure_we_vote_id} type="MEASURE"/>
+        <BookmarkToggle we_vote_id={measure_we_vote_id} type="MEASURE" />
         {/* Measure information */}
         <div className={ this.props.link_to_ballot_item_page ? "u-cursor--pointer" : null }
              onClick={ this.props.link_to_ballot_item_page ? () => historyPush("/measure/" + measure_we_vote_id) : null }>
@@ -114,48 +114,16 @@ export default class MeasureItemCompressed extends Component {
         </div>
         { measure_text ? <div className="measure_text">{measure_text}</div> : null }
 
-        {/* Opinion Items */}
+        {/* Positions in Your Network and Possible Voter Guides to Follow */}
         <div className="u-flex u-flex-auto u-flex-row u-justify-between u-items-center u-min-50">
-          {/* Positions in Your Network */}
-          <div className={ this.props.link_to_ballot_item_page ? "u-cursor--pointer" : null }
-               onClick={ this.props.link_to_ballot_item_page ? () => this.props.toggleMeasureModal(measure_for_modal) : null }>
-            <ItemSupportOpposeCounts we_vote_id={measure_we_vote_id}
-                                     supportProps={this.state.supportProps}
-                                     guideProps={measureGuidesList}
-                                     type="MEASURE" />
-          </div>
-
-          {/* Possible Voter Guides to Follow (Desktop) */}
-          <div onClick={ this.props.link_to_ballot_item_page ? () => this.props.toggleMeasureModal(measure_for_modal) : null }>
-            { measureGuidesList && measureGuidesList.length ?
-              <ItemTinyOpinionsToFollow ballotItemWeVoteId={measure_we_vote_id}
-                                        organizationsToFollow={measureGuidesList}
-                                        maximumOrganizationDisplay={this.state.maximum_organization_display}
-                                        supportProps={this.state.supportProps} /> : null }
-          </div>
-
-          {/* Support or Oppose */}
-          <div className="u-cursor--pointer">
-            <ItemActionBar ballot_item_we_vote_id={measure_we_vote_id}
-                           supportProps={this.state.supportProps}
-                           shareButtonHide
-                           commentButtonHide
-                           transitioning={this.state.transitioning}
-                           ballot_item_display_name={ballot_item_display_name}
-                           type="MEASURE" />
-          </div>
+          <ItemSupportOpposeRaccoon ballotItemWeVoteId={measure_we_vote_id}
+                                    ballot_item_display_name={ballot_item_display_name}
+                                    maximumOrganizationDisplay={this.state.maximum_organization_display}
+                                    organizationsToFollowSupport={organizationsToFollowSupport}
+                                    organizationsToFollowOppose={organizationsToFollowOppose}
+                                    supportProps={measureSupportStore}
+                                    type="MEASURE" />
         </div>
-        {/* If voter has taken position, offer the comment bar */}
-        { is_support || is_oppose || voter_statement_text ?
-          <div>
-            <ItemPositionStatementActionBar ballot_item_we_vote_id={measure_we_vote_id}
-                                            ballot_item_display_name={this.props.ballot_item_display_name}
-                                            supportProps={this.state.supportProps}
-                                            transitioning={this.state.transitioning}
-                                            type="MEASURE" />
-          </div> :
-          null
-        }
       </div> {/* END .card-main__content */}
     </div>;
   }

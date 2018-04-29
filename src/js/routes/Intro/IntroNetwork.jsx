@@ -1,11 +1,12 @@
 import React, { Component } from "react";
 import Helmet from "react-helmet";
 import Slider from "react-slick";
-import { cordovaDot, historyPush } from "../../utils/cordovaUtils";
+import { cordovaDot, historyPush, isWebApp } from "../../utils/cordovaUtils";
 import IntroNetworkSafety from "../../components/Intro/IntroNetworkSafety";
 import IntroNetworkDefinition from "../../components/Intro/IntroNetworkDefinition";
 import IntroNetworkScore from "../../components/Intro/IntroNetworkScore";
 import IntroNetworkBallotIsNext from "../../components/Intro/IntroNetworkBallotIsNext";
+import { renderLog } from "../../utils/logging";
 
 export default class IntroNetwork extends Component {
 
@@ -41,6 +42,7 @@ export default class IntroNetwork extends Component {
   }
 
   render () {
+    renderLog(__filename);
     //These are settings for the react-slick slider
     const settings = {
       dots: true,
@@ -56,11 +58,14 @@ export default class IntroNetwork extends Component {
     return <div>
       <Helmet title="Welcome to We Vote" />
       <div className="intro-story container-fluid well u-inset--md">
-        <img src={cordovaDot("/img/global/icons/x-close.png")} onClick={IntroNetwork.goToBallotLink} className="x-close" alt={"close"}/>
-        <Slider ref="slider" {...settings}>
+        <img src={cordovaDot("/img/global/icons/x-close.png")}
+             onClick={IntroNetwork.goToBallotLink}
+             className={ isWebApp() ? "x-close" : "x-close x-close__cordova" }
+             alt={"close"} />
+        <Slider dotsClass="slick-dots intro-modal__gray-dots" ref="slider" {...settings}>
           <div key={1}><IntroNetworkSafety next={this.next}/></div>
           <div key={2}><IntroNetworkDefinition next={this.next}/></div>
-          <div key={3}><IntroNetworkScore next={this.next}/></div>
+          {/* <div key={3}><IntroNetworkScore next={this.next}/></div> */}
           <div key={4}><IntroNetworkBallotIsNext next={this.next}/></div>
        </Slider>
       </div>

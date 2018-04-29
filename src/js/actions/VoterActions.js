@@ -1,6 +1,7 @@
 import Dispatcher from "../dispatcher/Dispatcher";
+import { isCordova } from "../utils/cordovaUtils";
 
-module.exports = {
+export default {
   organizationSuggestionTasks: function (kind_of_suggestion_task, kind_of_follow_task) {
     Dispatcher.loadEndpoint("organizationSuggestionTasks",
       {
@@ -74,7 +75,8 @@ module.exports = {
     Dispatcher.loadEndpoint("voterEmailAddressSave", {
       text_for_email_address: voter_email_address,
       send_link_to_sign_in: send_link_to_sign_in,
-      make_primary_email: true
+      make_primary_email: true,
+      is_cordova: isCordova(),
     });
   },
 

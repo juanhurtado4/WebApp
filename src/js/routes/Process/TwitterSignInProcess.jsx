@@ -1,9 +1,11 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { historyPush } from "../../utils/cordovaUtils";
+import LoadingWheel from "../../components/LoadingWheel";
+import { renderLog } from "../../utils/logging";
 import TwitterActions from "../../actions/TwitterActions";
 import TwitterStore from "../../stores/TwitterStore";
 import VoterStore from "../../stores/VoterStore";
-import LoadingWheel from "../../components/LoadingWheel";
 import VoterActions from "../../actions/VoterActions";
 import WouldYouLikeToMergeAccounts from "../../components/WouldYouLikeToMergeAccounts";
 
@@ -34,7 +36,7 @@ export default class TwitterSignInProcess extends Component {
   _onTwitterStoreChange () {
     this.setState({
       twitter_auth_response: TwitterStore.getTwitterAuthResponse(),
-      saving: false
+      saving: false,
     });
   }
 
@@ -70,6 +72,8 @@ export default class TwitterSignInProcess extends Component {
     }
   }
 
+  // This creates the public.twitter_twitterlinktovoter entry, which is needed
+  // to establish is_signed_in within the voter.voter
   voterTwitterSaveToCurrentAccount () {
     VoterActions.voterTwitterSaveToCurrentAccount();
     historyPush({
@@ -95,6 +99,7 @@ export default class TwitterSignInProcess extends Component {
   }
 
   render () {
+    renderLog(__filename);
     let {twitter_auth_response, yes_please_merge_accounts} = this.state;
 
     // console.log("TwitterSignInProcess render, this.state.saving:", this.state.saving);
@@ -160,7 +165,7 @@ export default class TwitterSignInProcess extends Component {
         return LoadingWheel;
       }
     } else {
-      // console.log("Setting up new Twitter entry - voterTwitterSaveToCurrentAccount");
+      console.log("Setting up new Twitter entry - voterTwitterSaveToCurrentAccount");
       this.voterTwitterSaveToCurrentAccount();
       //return <span>Setting up new Twitter entry - voterTwitterSaveToCurrentAccount</span>;
       return LoadingWheel;

@@ -1,6 +1,8 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
 import VoterGuideActions from "../../actions/VoterGuideActions";
+import { renderLog } from "../../utils/logging";
 import OrganizationFollowToggle from "./OrganizationFollowToggle";
 import { isSpeakerTypeIndividual } from "../../utils/organization-functions";
 import VoterGuideStore from "../../stores/VoterGuideStore";
@@ -103,8 +105,8 @@ export default class BallotIntroFollowAdvisers extends Component {
   }
 
   render () {
+    renderLog(__filename);
     // BallotIntroOrganizations is very similar. Check to see if we want to keep that file and this one in sync.
-
     // These are the organizations that a voter might want to follow based on the issues the voter is following.
     let voter_guides_to_follow_by_issues_followed = this.state.voter_guides_to_follow_by_issues_followed || [];
 
@@ -174,7 +176,7 @@ export default class BallotIntroFollowAdvisers extends Component {
               <span>Great work! Next, click to listen to any of these organizations to see their opinions on your ballot.</span>
             }
           </div>
-          <div className="intro-modal-vertical-scroll-contain intro-modal-vertical-scroll-contain__advisers">
+          <div className="intro-modal-vertical-scroll-contain">
             <div className="intro-modal-vertical-scroll card">
               <div className="row intro-modal__grid">
                 { voter_guides_to_follow_by_issues_for_display.length ? voter_guides_to_follow_by_issues_for_display : null }

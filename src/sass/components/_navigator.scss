@@ -3,12 +3,21 @@ $icon-color-active: $link-color;
 $icon-color-hover: $gray-dark;
 $glyph-icon-color: #51708e;
 $header-height: 54px;
+$header-height-cordova-ios: 70px;
+$header-height-cordova-android: 50px;
 $header-height-getting-started: 104px;
+$nav-item-getting-started-background-hover-color: darken($page-header-getting-started-background-color, 5%);
+$nav-item-getting-started-background-active-color: darken($page-header-getting-started-background-color, 10%);
+$footer-menu-margin: 130px;
+$space-hamburger: 5px;
+$hamburger-table-menu-margin: 2em;
+$transparent-background: transparent;
+$container-margin: -15px;
 
 // Header Nav
 // ================================
 
-.account-menu,
+.profile-menu,
 .about-menu {
   max-width: 320px;
   position: absolute;
@@ -22,7 +31,30 @@ $header-height-getting-started: 104px;
   pointer-events: none;
 }
 
-.account-menu::before,
+.about-us,
+.Donate,
+.gettingStarted {
+  @include breakpoints(max mid-small) {
+    margin-right: $container-margin !important;
+    margin-left: $container-margin !important;
+  }
+}
+
+.profile-foot-menu {
+  position: fixed; /* Stay in place */
+  z-index: 10; /* Sit on top */
+  left: 0;
+  top: 70px !important;
+  bottom: 50px !important;
+  width: 100%; /* Full width */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: $white;
+  pointer-events: none;
+  transition: 10s ease-in-out;
+}
+
+// This is the little triangular arrow, https://css-tricks.com/snippets/css/css-triangle/
+.profile-menu::before,
 .about-menu::before {
   content: '';
   display: block;
@@ -50,13 +82,30 @@ $header-height-getting-started: 104px;
   opacity: 0;
 }
 
-.account-menu--open .page-overlay,
+// css for the Slider, which is commented out 3/8/18
+.page-overlay-slidein {
+  position: fixed;
+  width: 200vw;
+  height: 200vh;
+  top: -10px;
+  left: -10px;
+  background-color: $transparent-background;
+  z-index: 2;
+  pointer-events: none;
+  // background: none !important;
+  //transition: opacity .4s ease-in-out;
+  //opacity: 0;
+}
+
+.profile-menu--open .page-overlay,
+.profile-foot-menu--open .page-overlay,
 .about-menu--open .page-overlay {
   opacity: 1;
   pointer-events: all;
 }
 
-.account-menu--open .account-menu,
+.profile-menu--open .profile-menu,
+.profile-foot-menu--open .profile-foot-menu,
 .about-menu--open .about-menu {
   opacity: 1;
   pointer-events: all;
@@ -64,6 +113,19 @@ $header-height-getting-started: 104px;
 
 .headroom-wrapper {
   margin-top: $header-height;
+  &__cordova-ios {
+    margin-top: $header-height-cordova-ios;
+  }
+  &__cordova-android {
+    margin-top: $header-height-cordova-android;
+  }
+}
+
+.footroom-wrapper {
+  margin-bottom: $header-height;
+  &__hide {
+    display: none;
+  }
 }
 
 .headroom-getting-started__margin {
@@ -75,11 +137,11 @@ $header-height-getting-started: 104px;
 
 .nav-getting-started__image {
   height: 26px;
-  &-fade {
+  &--fade {
     @extend .nav-getting-started__image;
     opacity: .3;
   }
-  &-checked {
+  &--checked {
     height: 16px;
     top: 2px;
     position: absolute;
@@ -168,10 +230,14 @@ $header-height-getting-started: 104px;
     background: #fff;
     overflow: hidden;
     height: 34px;
+    width: 34px;
     display: block;
   }
   &__avatar-wrapper {
-    z-index: 3; //to float above the account menu option grey div
+    z-index: 3; //to float above the account/ProfilePopUp menu option grey div
+  }
+  &__cordova {
+    margin-right: $space-md;
   }
 }
 
@@ -203,7 +269,7 @@ $header-height-getting-started: 104px;
     display: block;
     color: $gray-dark;
     font-size: 10px;
-    &-fade {
+    &--fade {
       @extend .header-getting-started-nav__label;
       opacity: .3;
     }
@@ -223,11 +289,8 @@ $header-height-getting-started: 104px;
     // temporary offsets for .page-header__container padding
     margin: -8px $space-none; // stylelint-disable-line sh-waqar/declaration-use-variable
 
-    &-image-wrapper {
-      height: 29px;
-      @include breakpoints(small mid-small) {
-        transform: scale(.8);
-      }
+    @include breakpoints(small mid-small) {
+      width: 65px;
     }
 
     &:active,
@@ -248,11 +311,101 @@ $header-height-getting-started: 104px;
       background-color: $nav-item-getting-started-background-hover-color;
     }
   }
+
+  &__item-image-wrapper {
+    height: 29px;
+    @include breakpoints(small mid-small) {
+      transform: scale(.8);
+    }
+  }
+
   .nav-icon {
     font-size: 1rem;
     height: 36px;
     display: flex;
     justify-content: center;
     align-items: center;
+  }
+}
+
+.hamburger {
+  $nav-item-active-color: darken($page-header-color, 10%);
+  $hamburger-space: 20px;
+  font-size: 20px;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  width: 60px;
+  height: $header-height;
+  padding: $space-sm;
+  padding-left: $hamburger-space;
+  color: $white !important;
+  opacity: .8;
+  // temporary offsets for .page-header__container padding
+  margin-top: -.5em; // stylelint-disable-line sh-waqar/declaration-use-variable
+  margin-bottom: -.5em; // stylelint-disable-line sh-waqar/declaration-use-variable
+
+  &.active-icon {
+    color: $gray-dark;
+    opacity: .9;
+    text-decoration: none;
+    background-color: $nav-item-active-color !important;
+  }
+}
+
+.hamburger-menu {
+  background-color: $white;
+  &__table {
+    border-top: 40px;
+    margin-left: $hamburger-table-menu-margin;
+    border-top-color: $white;
+  }
+  &__tr {
+    height: 50px;
+    border-bottom: 1px solid #e7e7e7;
+  }
+  &__td-0 {
+    padding-left: $space-md !important;
+    vertical-align: middle !important;
+    max-width: 2.2em;
+  }
+  &__td-1 {
+    font-size: 1.3rem;
+    vertical-align: middle !important;
+    max-width: 1em;
+  }
+  &__td-2 {
+    font-size: 1.3rem;
+    vertical-align: middle !important;
+  }
+  &__td-3 {
+    vertical-align: middle !important;
+    font-size: 1.3rem;
+  }
+  &__td-4 {
+    vertical-align: middle !important;
+    width: 10%;
+  }
+}
+
+.hamburger-terms {
+  $terms-top: 23px;
+  $blue: blue;
+  &__tr {
+    height: 50px !important;
+  }
+
+  &__td {
+    padding-left: $space-md !important;
+    padding-bottom: $space-sm !important;
+    padding-top: $terms-top !important;
+    margin-left: $hamburger-table-menu-margin;
+  }
+
+  &__text {
+    font-weight: 300;
+    font-size: 13pt;
   }
 }

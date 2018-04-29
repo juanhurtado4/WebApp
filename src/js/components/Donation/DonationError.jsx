@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Label } from "react-bootstrap";
+import { renderLog } from "../../utils/logging";
 
 export default class DonationError extends Component {
 
@@ -12,6 +14,7 @@ export default class DonationError extends Component {
   }
 
   render () {
+    renderLog(__filename);
     return <div>
       <Label bsStyle="warning">{this.props.errorMessage}</Label>
     </div>;

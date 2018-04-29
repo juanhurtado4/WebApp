@@ -1,11 +1,14 @@
 /* global google */
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
+import BallotStore from "../stores/BallotStore";
 import { historyPush } from "../utils/cordovaUtils";
+import { isCordova } from "../utils/cordovaUtils";
 import LoadingWheel from "../components/LoadingWheel";
+import { renderLog } from "../utils/logging";
 import VoterActions from "../actions/VoterActions";
 import VoterStore from "../stores/VoterStore";
-import BallotStore from "../stores/BallotStore";
 
 export default class AddressBox extends Component {
   static propTypes = {
@@ -32,7 +35,7 @@ export default class AddressBox extends Component {
       text_for_map_search: VoterStore.getTextForMapSearch(),
       ballotCaveat: BallotStore.getBallotCaveat(),
     });
-    this.voterStoreListener = VoterStore.addListener(this._onVoterStoreChange.bind(this));
+    this.voterStoreListener = VoterStore.addListener(this.onVoterStoreChange.bind(this));
     this.ballotStoreListener = BallotStore.addListener(this.onBallotStoreChange.bind(this));
     let addressAutocomplete = new google.maps.places.Autocomplete(this.refs.autocomplete);
     addressAutocomplete.setComponentRestrictions({ country: "us" });
@@ -45,8 +48,8 @@ export default class AddressBox extends Component {
     this.googleAutocompleteListener.remove();
   }
 
-  _onVoterStoreChange () {
-    // console.log("AddressBox, _onVoterStoreChange, this.state:", this.state);
+  onVoterStoreChange () {
+    // console.log("AddressBox, onVoterStoreChange, this.state:", this.state);
     if (this.props.toggleSelectAddressModal) {
       this.props.toggleSelectAddressModal();
     }
@@ -100,6 +103,7 @@ export default class AddressBox extends Component {
   }
 
   render () {
+    renderLog(__filename);
     if (this.state.loading) {
       return <div>
             <h2>Please wait a moment while we adjust your ballot options to the new location...</h2>
@@ -118,7 +122,7 @@ export default class AddressBox extends Component {
             className="form-control"
             ref="autocomplete"
             placeholder="Enter address where you are registered to vote"
-            autoFocus
+            autoFocus={!isCordova()}
           />
         </form>
         <div>

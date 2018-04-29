@@ -1,9 +1,11 @@
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { Link } from "react-router";
+import { renderLog } from "../utils/logging";
 import VoterGuideStore from "../stores/VoterGuideStore";
 import Helmet from "react-helmet";
 import SearchGuidesToFollowBox from "../components/Search/SearchGuidesToFollowBox";
 import GuideList from "../components/VoterGuide/GuideList";
-import { Link } from "react-router";
-import React, {Component, PropTypes } from "react";
 
 /* VISUAL DESIGN HERE: https://invis.io/TR4A1NYAQ */
 
@@ -52,6 +54,7 @@ export default class Opinions extends Component {
   }
 
   render () {
+    renderLog(__filename);
     const { ballot_has_guides, voter_guides_to_follow_all } = this.state;
     let guides;
     var floatRight = {

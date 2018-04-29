@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
+import { renderLog } from "../../utils/logging";
 
 export default class BallotTabsRaccoon extends Component {
   static propTypes = {
@@ -11,6 +13,7 @@ export default class BallotTabsRaccoon extends Component {
   };
 
   render () {
+    renderLog(__filename);
     let pathname = "/ballot";
     if (this.props.pathname && this.props.pathname !== "") {
       pathname = this.props.pathname;
@@ -18,6 +21,8 @@ export default class BallotTabsRaccoon extends Component {
 
     let remaining_decisions_count_different_than_all_items = this.props.length !== this.props.length_remaining;
     let show_remaining_decisions = remaining_decisions_count_different_than_all_items && this.props.length_remaining || false;
+    let show_decisions_made = remaining_decisions_count_different_than_all_items && this.props.length_remaining || false;
+    let items_decided_count = this.props.length - this.props.length_remaining || 0;
 
     return <ul className="nav ballot__tabs">
       { show_remaining_decisions ?
@@ -39,6 +44,18 @@ export default class BallotTabsRaccoon extends Component {
         </Link>
       </li>
 
+      { show_decisions_made ?
+        <li className="tab__item">
+          <Link to={{ pathname: pathname, query: { type: "filterSupport" } }}
+                className={this.props.ballot_type === "WHAT_I_SUPPORT" ? "tab tab--active" : "tab tab--default"}>
+            {/* Desktop */}
+            <span className="hidden-xs">Items Decided ({items_decided_count})</span>
+            {/* Mobile */}
+            <span className="visible-xs-block">Decided ({items_decided_count})</span>
+          </Link>
+        </li> :
+        null
+      }
     </ul>;
   }
 }

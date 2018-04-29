@@ -1,10 +1,12 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Modal } from "react-bootstrap";
 import BallotElectionList from "./BallotElectionList";
 import BallotLocationChoices from "../Navigation/BallotLocationChoices";
 import EditAddressInPlace from "../../components/Widgets/EditAddressInPlace";
-import VoterStore from "../../stores/VoterStore";
 import { calculateBallotBaseUrl } from "../../utils/textFormat";
+import { renderLog } from "../../utils/logging";
+import VoterStore from "../../stores/VoterStore";
 
 
 export default class SelectBallotModal extends Component {
@@ -43,6 +45,7 @@ export default class SelectBallotModal extends Component {
   }
 
   render () {
+    renderLog(__filename);
 
     let ballotBaseUrl = calculateBallotBaseUrl(this.props.ballotBaseUrl, this.props.pathname);
     // console.log("SelectBallotModal render, ballotBaseUrl: ", ballotBaseUrl);
@@ -51,10 +54,10 @@ export default class SelectBallotModal extends Component {
 
     let voter_address_object = VoterStore.getAddressObject();
     // console.log("SelectBallotModal render, voter_address_object: ", voter_address_object);
-
     return <Modal className="ballot-election-list ballot-election-list__modal ballot-election-list__modal-mobile"
+                  onHide={this.props.toggleFunction}
                   show={this.props.show}
-                  onHide={this.props.toggleFunction} >
+                  >
       <Modal.Header closeButton onHide={this.props.toggleFunction}>
         <Modal.Title className="ballot-election-list__h1">Change to Another Ballot</Modal.Title>
       </Modal.Header>
@@ -71,7 +74,6 @@ export default class SelectBallotModal extends Component {
                                toggleFunction={this.props.toggleFunction} />
         <br />
         <br />
-
         <BallotElectionList ballotBaseUrl={ballotBaseUrl}
                             ballotElectionList={ballotElectionList}
                             organization_we_vote_id={this.props.organization_we_vote_id}

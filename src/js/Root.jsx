@@ -3,6 +3,7 @@ import { Route, IndexRoute, IndexRedirect } from "react-router";
 import cookies from "./utils/cookies";
 import Application from "./Application";
 import About from "./routes/More/About";
+import AbsenteeBallot from "./routes/More/AbsenteeBallot";
 import Activity from "./routes/Activity";
 import Ballot from "./routes/Ballot/Ballot";
 import BallotIndex from "./routes/Ballot/BallotIndex";
@@ -13,6 +14,7 @@ import Connect from "./routes/Connect";
 import Credits from "./routes/More/Credits";
 import Donate from "./routes/More/Donate";
 import DonateThankYou from "./routes/More/DonateThankYou";
+import ElectionReminder from "./routes/More/ElectionReminder";
 import Elections from "./routes/More/Elections";
 import EmailBallot from "./routes/More/EmailBallot";
 import EmptyBallot from "./routes/Ballot/EmptyBallot";
@@ -21,6 +23,7 @@ import FAQ from "./routes/More/FAQ";
 import FacebookInvitableFriends from "./routes/FacebookInvitableFriends";
 import Friends from "./routes/Friends";
 import GetStarted from "./routes/Intro/GetStarted";
+import HamburgerMenu from "./routes/More/HamburgerMenu";
 import HowToUse from "./routes/More/HowToUse";
 import Intro from "./routes/Intro/Intro";
 import IntroContests from "./routes/Intro/IntroContests";
@@ -45,10 +48,11 @@ import OrganizationVoterGuideOffice from "./routes/VoterGuide/OrganizationVoterG
 import PollingPlaceLocatorModal from "./routes/Ballot/PollingPlaceLocatorModal";
 import Privacy from "./routes/More/Privacy";
 import ProcessingDonation from "./routes/More/ProcessingDonation";
+import RegisterToVote from "./routes/More/RegisterToVote";
 import SampleBallot from "./routes/Intro/SampleBallot";
 import ScratchPad from "./routes/ScratchPad";
-import Settings from "./routes/Settings/Settings";
 import SettingsDashboard from "./routes/Settings/SettingsDashboard";
+import SettingsMenuMobile from "./routes/Settings/SettingsMenuMobile";
 import SignIn from "./routes/SignIn/SignIn";
 import SignInJumpProcess from "./routes/Process/SignInJumpProcess";
 import FacebookLandingProcess from "./routes/Process/FacebookLandingProcess";
@@ -59,15 +63,22 @@ import TermsOfService from "./routes/More/TermsOfService";
 import ToolsToShareOnOtherWebsites from "./routes/More/ToolsToShareOnOtherWebsites";
 import TwitterHandleLanding from "./routes/TwitterHandleLanding";
 import TwitterSignInProcess from "./routes/Process/TwitterSignInProcess";
-import TwitterSignInProcessOld from "./routes/Process/TwitterSignInProcessOld";
 import VerifyEmailProcess from "./routes/Process/VerifyEmailProcess";
 import FriendInvitationByEmailVerifyProcess from "./routes/Process/FriendInvitationByEmailVerifyProcess";
+import VoterGuideChooseElection from "./routes/VoterGuide/VoterGuideChooseElection";
+import VoterGuideChoosePositions from "./routes/VoterGuide/VoterGuideChoosePositions";
 import VoterGuideGetStarted from "./routes/VoterGuide/VoterGuideGetStarted";
+import VoterGuideListDashboard from "./routes/Settings/VoterGuideListDashboard";
+import VoterGuideOrganizationInfo from "./routes/VoterGuide/VoterGuideOrganizationInfo";
+import VoterGuideOrganizationType from "./routes/VoterGuide/VoterGuideOrganizationType";
+import VoterGuideSettingsDashboard from "./routes/Settings/VoterGuideSettingsDashboard";
+import VoterGuideSettingsMenuMobile from "./routes/Settings/VoterGuideSettingsMenuMobile";
+import VoterGuidesMenuMobile from "./routes/Settings/VoterGuidesMenuMobile";
+import VerifyRegistration from "./routes/More/VerifyRegistration";
 import VerifyThisIsMe from "./routes/VoterGuide/VerifyThisIsMe";
-import Vision from "./routes/More/Vision";
 import Welcome from "./routes/Welcome";
 import YourPage from "./routes/YourPage";
-
+import { isWebApp } from "./utils/cordovaUtils";
 
 // See /js/components/Navigation/HeaderBar.jsx for show_full_navigation cookie
 const firstVisit = !cookies.getItem("voter_device_id");
@@ -75,9 +86,7 @@ const firstVisit = !cookies.getItem("voter_device_id");
 const routes = () =>
   <Route path="/" component={Application}>
     <Route component={Intro} />
-    { firstVisit ?
-      <IndexRedirect to="/welcome" /> :
-      <IndexRedirect to="/welcome" /> }
+    { isWebApp() ? <IndexRedirect to="/welcome" /> : firstVisit ? <IndexRedirect to="/wevoteintro/network" /> : <IndexRedirect to="/ballot" />}
     <Route path="/welcome" component={Welcome} />
     <Route path="/activity" component={Activity} />
     <Route path="/ballot" component={BallotIndex}>
@@ -109,12 +118,15 @@ const routes = () =>
     <Route path="/intro/sample_ballot" component={SampleBallot} />
     <Route path="/intro/get_started" component={GetStarted} />
 
-    {/* Settings go in this structure... */}
-    <Route path="/settings" component={SettingsDashboard}>
-      <IndexRoute component={Settings} />
-      <Route path="/settings/claim" component={ClaimYourPage} />
-      <Route path="/settings/location" component={Location} />  /* Complete path on one line for searching */
-    </Route>
+    {/* Your Settings go in this structure... */}
+    <Route path="/settings" component={SettingsDashboard} />
+    <Route path="/settings/claim" component={ClaimYourPage} />
+    <Route path="/settings/location" component={Location} />  /* Complete path on one line for searching */
+    <Route path="/settings/menu" component={SettingsMenuMobile} />
+    <Route path="/settings/voterguidelist" component={VoterGuideListDashboard} />
+    <Route path="/settings/voterguidesmenu" component={VoterGuidesMenuMobile} />
+    <Route path="/settings/:edit_mode" component={SettingsDashboard} />
+    <Route path="/settings/issues/:edit_mode" component={SettingsDashboard} />
 
     {/* Ballot Off-shoot Pages */}
     <Route path="/opinions" component={Opinions} />
@@ -134,6 +146,8 @@ const routes = () =>
 
     {/* More Menu Pages */}
     <Route path="/more/about" component={About} />
+    <Route path="/more/absentee" component={AbsenteeBallot} />
+    <Route path="/more/alerts" component={ElectionReminder} />
     <Route path="/more/connect" component={Connect} />
     <Route path="/more/credits" component={Credits} />
     <Route path="/more/donate" component={Donate} />
@@ -144,6 +158,7 @@ const routes = () =>
     <Route path="/more/facebookredirecttowevote" component={FacebookRedirectToWeVote} />
     <Route path="/more/faq" component={FAQ} />
     <Route path="/more/howtouse" component={HowToUse} />
+    <Route path="/more/hamburger" component={HamburgerMenu} />
     <Route path="/more/jump" component={SignInJumpProcess} />
     <Route path="/more/network" component={Network} />
     <Route path="/more/network/key/:invitation_secret_key" component={FriendInvitationByEmailVerifyProcess} />
@@ -152,34 +167,46 @@ const routes = () =>
     <Route path="/more/organization" component={Organization} />
     <Route path="/more/privacy" component={Privacy} />
     <Route path="/more/processing_donation" component={ProcessingDonation} />
+    <Route path="/more/register" component={RegisterToVote} />
     <Route path="/more/sign_in" component={SignIn} />
     <Route path="/more/team" component={Team} />
     <Route path="/more/tools" component={ToolsToShareOnOtherWebsites} />
     <Route path="/more/terms" component={TermsOfService} />
-    <Route path="/more/vision" component={Vision} />
+    <Route path="/more/verify" component={VerifyRegistration} />
+    <Route path="/more/vision" component={Organization} />
 
-    {/* Voter Guide Pages */}
+    {/* Voter Guide Pages - By Organization */}
     <Route path="/voterguide/:organization_we_vote_id" component={OrganizationVoterGuide} />
     <Route path="/voterguide/:organization_we_vote_id/ballot" component={OrganizationVoterGuide} />
     <Route path="/voterguide/:organization_we_vote_id/ballot/empty" component={OrganizationVoterGuide} />
     <Route path="/voterguide/:organization_we_vote_id/ballot/:ballot_location_shortcut" component={OrganizationVoterGuide} />
     <Route path="/voterguide/:organization_we_vote_id/ballot/id/:ballot_returned_we_vote_id" component={OrganizationVoterGuide} />
     <Route path="/voterguide/:organization_we_vote_id/ballot/election/:google_civic_election_id" component={OrganizationVoterGuide} />
+    <Route path="/voterguide/:organization_we_vote_id/ballot/election/:google_civic_election_id/ballot" component={props => <OrganizationVoterGuide {...props} active_route="ballot" />} />
+    <Route path="/voterguide/:organization_we_vote_id/ballot/election/:google_civic_election_id/following" component={props => <OrganizationVoterGuide {...props} active_route="following" />} />
+    <Route path="/voterguide/:organization_we_vote_id/ballot/election/:google_civic_election_id/followers" component={props => <OrganizationVoterGuide {...props} active_route="followers" />} />
+    <Route path="/voterguide/:organization_we_vote_id/ballot/election/:google_civic_election_id/positions" component={props => <OrganizationVoterGuide {...props} active_route="positions" />} />
     <Route path="/voterguide/:organization_we_vote_id/followers" component={props => <OrganizationVoterGuide {...props} active_route="followers" />} />
     <Route path="/voterguide/:organization_we_vote_id/following" component={props => <OrganizationVoterGuide {...props} active_route="following" />} />
     <Route path="/voterguide/:organization_we_vote_id/positions" component={props => <OrganizationVoterGuide {...props} active_route="positions" />} />
     <Route path="/voterguide/:organization_we_vote_id/:action_variable" component={OrganizationVoterGuide} />
     <Route path="/voterguideedit/:organization_we_vote_id" component={OrganizationVoterGuideEdit} />
-    <Route path="/voterguideedit/:organization_we_vote_id/:edit_mode" component={OrganizationVoterGuideEdit} />
-    <Route path="/voterguideedit/:organization_we_vote_id/:edit_mode/:active_tab" component={OrganizationVoterGuideEdit} />
+    <Route path="/voterguideedit/:organization_we_vote_id/:google_civic_election_id" component={OrganizationVoterGuideEdit} />
+
+    {/* Voter Guide Settings go in this structure... */}
+    <Route path="/vg/:voter_guide_we_vote_id/settings" component={VoterGuideSettingsDashboard} />
+    <Route path="/vg/:voter_guide_we_vote_id/settings/menu" component={VoterGuideSettingsMenuMobile} />
+    <Route path="/vg/:voter_guide_we_vote_id/settings/:edit_mode" component={VoterGuideSettingsDashboard} />
 
     <Route path="/voterguidegetstarted" component={VoterGuideGetStarted} />
+    <Route path="/voterguideorgtype" component={VoterGuideOrganizationType} />
+    <Route path="/voterguideorginfo" component={VoterGuideOrganizationInfo} />
+    <Route path="/voterguidechooseelection" component={VoterGuideChooseElection} />
+    <Route path="/voterguidepositions/:voter_guide_we_vote_id" component={VoterGuideChoosePositions} />
     <Route path="/yourpage" component={YourPage} />
 
     <Route path="/facebook_sign_in" component={FacebookSignInProcess} />
 
-    <Route path="/twittersigninprocess/:sign_in_step/:incoming_twitter_handle" component={TwitterSignInProcessOld} />
-    <Route path="/twittersigninprocess/:sign_in_step" component={TwitterSignInProcessOld} />
     <Route path="/twitter_sign_in" component={TwitterSignInProcess} />
 
     <Route path="/verify_email/:email_secret_key" component={VerifyEmailProcess} />
@@ -195,6 +222,7 @@ const routes = () =>
     <Route path=":twitter_handle/ballot/:ballot_location_shortcut" component={TwitterHandleLanding} />
     <Route path=":twitter_handle/ballot/id/:ballot_returned_we_vote_id" component={TwitterHandleLanding} />
     <Route path=":twitter_handle/ballot/election/:google_civic_election_id" component={TwitterHandleLanding} />
+    <Route path=":twitter_handle/ballot/election/:google_civic_election_id/:view_mode" component={TwitterHandleLanding} />{/* view_mode not taken in yet */}
 
     {/* Any route that is not found -> @return TwitterHandleLanding component */}
     <Route path=":twitter_handle" component={TwitterHandleLanding} />
@@ -204,6 +232,5 @@ const routes = () =>
     <Route path=":twitter_handle/:action_variable" component={TwitterHandleLanding} />
 
   </Route>;
-
 
 export default routes;

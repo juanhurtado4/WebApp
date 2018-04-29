@@ -1,7 +1,11 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
-import IssueActions from "../../actions/IssueActions";
 import ImageHandler from "../ImageHandler";
+import IssueActions from "../../actions/IssueActions";
+import { showToastError, showToastSuccess } from "../../utils/showToast";
+import { renderLog } from "../../utils/logging";
+
 
 export default class IssueFollowToggle extends Component {
   static propTypes = {
@@ -40,6 +44,7 @@ export default class IssueFollowToggle extends Component {
       if (this.props.on_issue_follow) {
         this.props.on_issue_follow(this.props.issue_we_vote_id);
       }
+      showToastSuccess(`Now following ${this.props.issue_name}!`);
     }
   }
 
@@ -49,9 +54,11 @@ export default class IssueFollowToggle extends Component {
     if (this.props.on_issue_stop_following) {
       this.props.on_issue_stop_following(this.props.issue_we_vote_id);
     }
+    showToastError(`You've stopped following ${this.props.issue_name}.`);
   }
 
   render () {
+    renderLog(__filename);
     if (!this.state) { return <div />; }
 
     return this.state.is_following ?
@@ -70,7 +77,7 @@ export default class IssueFollowToggle extends Component {
         </span>
         { this.props.edit_mode ?
           <Button bsStyle="warning" bsSize="small" onClick={this.onIssueStopFollowing}>
-            <span>Listening</span>
+            <span>Following</span>
           </Button> :
           null }
       </div> :

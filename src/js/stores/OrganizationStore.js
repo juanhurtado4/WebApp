@@ -16,13 +16,36 @@ class OrganizationStore extends ReduceStore {
       organization_we_vote_ids_voter_is_following: [],
       organization_we_vote_ids_voter_is_ignoring: [],
       organization_we_vote_ids_voter_is_following_on_twitter: [],
+      organization_search_results: {
+        organization_search_term: "",
+        organization_twitter_handle: "",
+        number_of_search_results: 0,
+        search_results: [],
+      },
+    };
+  }
+
+  resetState () {
+    return {
+      all_cached_organizations_dict: {}, // This is a dictionary with organization_we_vote_id as key and list of organizations
+      organization_we_vote_ids_followed_by_organization_dict: {}, // Dictionary with organization_we_vote_id as key and list of organization_we_vote_id's being followed as value
+      organization_we_vote_ids_following_by_organization_dict: {}, // Dictionary with organization_we_vote_id as key and list of organization_we_vote_id's following that org as value
+      organization_we_vote_ids_voter_is_following: [],
+      organization_we_vote_ids_voter_is_ignoring: [],
+      organization_we_vote_ids_voter_is_following_on_twitter: [],
+      organization_search_results: {
+        organization_search_term: "",
+        organization_twitter_handle: "",
+        number_of_search_results: 0,
+        search_results: [],
+      },
     };
   }
 
   // Given a list of ids, retrieve the complete all_cached_organizations_dict with all attributes and return as array
   returnOrganizationsFromListOfIds (list_of_organization_we_vote_ids) {
     const state = this.getState();
-    let filtered_organizations_followed = [];
+    let filtered_organizations = [];
     if (list_of_organization_we_vote_ids) {
       // organizationsFollowedRetrieve API returns more than one voter guide per organization some times.
       let unique_organization_we_vote_id_array = list_of_organization_we_vote_ids.filter((value, index, self) => {
@@ -30,11 +53,11 @@ class OrganizationStore extends ReduceStore {
       });
       unique_organization_we_vote_id_array.forEach(organization_we_vote_id => {
         if (state.all_cached_organizations_dict[organization_we_vote_id]) {
-          filtered_organizations_followed.push(state.all_cached_organizations_dict[organization_we_vote_id]);
+          filtered_organizations.push(state.all_cached_organizations_dict[organization_we_vote_id]);
         }
       });
     }
-    return filtered_organizations_followed;
+    return filtered_organizations;
   }
 
   getOrganizationByWeVoteId (organization_we_vote_id){
@@ -130,6 +153,40 @@ class OrganizationStore extends ReduceStore {
     }
   }
 
+  getOrganizationSearchResultsOrganization () {
+    // if only one organization is found, return the organization_twitter_handle
+    let number_of_search_results = this.getState().organization_search_results.number_of_search_results || 0;
+    if (number_of_search_results === 1) {
+      let organizations_list = this.getState().organization_search_results.organizations_list;
+      return organizations_list[0];
+    }
+    return {};
+  }
+
+  getOrganizationSearchResultsOrganizationName () {
+    let organization = this.getOrganizationSearchResultsOrganization();
+    if (organization && organization.organization_name) {
+      return organization.organization_name;
+    }
+    return "";
+  }
+
+  getOrganizationSearchResultsTwitterHandle () {
+    let organization = this.getOrganizationSearchResultsOrganization();
+    if (organization && organization.organization_twitter_handle) {
+      return organization.organization_twitter_handle;
+    }
+    return "";
+  }
+
+  getOrganizationSearchResultsWebsite () {
+    let organization = this.getOrganizationSearchResultsOrganization();
+    if (organization && organization.organization_website) {
+      return organization.organization_website;
+    }
+    return "";
+  }
+
   _copyListsToNewOrganization (new_organization, prior_copy_of_organization){
     // console.log("new_organization (_copyListsToNewOrganization): ", new_organization);
     // console.log("prior_copy_of_organization (_copyListsToNewOrganization): ", prior_copy_of_organization);
@@ -158,7 +215,6 @@ class OrganizationStore extends ReduceStore {
     let voter_guides;
 
     switch (action.type) {
-
       case "organizationFollow":
         // We also listen to "organizationFollow" in VoterGuideStore so we can alter organization_we_vote_ids_to_follow_all and organization_we_vote_ids_to_follow_for_latest_ballot_item
         // voter_linked_organization_we_vote_id is the voter who clicked the Follow button
@@ -194,6 +250,19 @@ class OrganizationStore extends ReduceStore {
           ...state,
           organization_we_vote_ids_voter_is_following: organization_we_vote_ids_voter_is_following,
           organization_we_vote_ids_voter_is_ignoring: state.organization_we_vote_ids_voter_is_ignoring.filter( existing_org_we_vote_id => { return existing_org_we_vote_id !== voter_linked_organization_we_vote_id; })
+        };
+
+      case "organizationSearch":
+        let organizations_list = action.res.organizations_list || [];
+        let number_of_search_results = organizations_list.length;
+        return {
+          ...state,
+          organization_search_results: {
+            organization_search_term: action.res.organization_search_term,
+            organization_twitter_handle: action.res.organization_twitter_handle,
+            number_of_search_results: number_of_search_results,
+            organizations_list: organizations_list,
+          }
         };
 
       case "organizationStopFollowing":
@@ -345,6 +414,7 @@ class OrganizationStore extends ReduceStore {
         };
 
       case "positionListForOpinionMaker":  // ...and positionListForOpinionMakerForFriends
+        // console.log("OrganizationStore, positionListForOpinionMaker response");
         organization_we_vote_id = action.res.opinion_maker_we_vote_id;
         if (action.res.friends_vs_public === "FRIENDS_ONLY") {  // positionListForOpinionMakerForFriends
           if (action.res.filter_for_voter) {
@@ -512,10 +582,14 @@ class OrganizationStore extends ReduceStore {
           organization_we_vote_ids_voter_is_ignoring: organization_we_vote_ids_voter_is_ignoring,
         };
 
+      case "voterSignOut":
+        // console.log("resetting OrganicationStore");
+        return this.resetState();
+
       default:
         return state;
     }
   }
 }
 
-module.exports = new OrganizationStore(Dispatcher);
+export default new OrganizationStore(Dispatcher);

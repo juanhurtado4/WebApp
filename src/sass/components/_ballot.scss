@@ -10,6 +10,7 @@ $scrollbar-height: 20px;
 $tab-height: 47px;
 $tab-height-visible: $tab-height - $scrollbar-height;
 $neg-space-lg: -$space-lg;
+$bottom-spacing-cordova: 50px;
 
 .ballot {
   // ===========================================
@@ -35,15 +36,6 @@ $neg-space-lg: -$space-lg;
     padding-top: $header-extension-top;
     margin-top: $minus-header-extension-top;
     overflow: hidden;
-
-    &__voter-guide {
-      width: 100%;
-      background-color: $white;
-      border-bottom: 1px solid #aaa;
-      padding-top: $header-extension-top-voter-guide;
-      margin-top: $minus-header-extension-top-voter-guide;
-      overflow: hidden;
-    }
   }
 
   &__header {
@@ -53,6 +45,7 @@ $neg-space-lg: -$space-lg;
 
     &__title-voter-guide {
       display: inline-block;
+      margin-top: $space-xs;
       font-size: 1.1rem;
       @include print {
         font-size: 2rem;
@@ -70,6 +63,10 @@ $neg-space-lg: -$space-lg;
     &__group {
       display: block;
       border-bottom: 0 solid $black;
+    }
+
+    &__cordova {
+      padding-bottom: $bottom-spacing-cordova;
     }
   }
 

@@ -1,7 +1,9 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import FriendInvitationDisplayForList from "./FriendInvitationDisplayForList";
 import FriendInvitationEmailForList from "./FriendInvitationEmailForList";
 import ReactCSSTransitionGroup from "react-addons-css-transition-group";
+import { renderLog } from "../../utils/logging";
 
 export default class FriendInvitationList extends Component {
 
@@ -30,6 +32,7 @@ export default class FriendInvitationList extends Component {
   }
 
   render () {
+    renderLog(__filename);
     if (this.state.friend_invitations_list === undefined) {
       return null;
     }

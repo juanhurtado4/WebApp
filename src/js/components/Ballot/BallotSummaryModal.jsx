@@ -1,6 +1,8 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Modal } from "react-bootstrap";
 import BallotSideBar from "../Navigation/BallotSideBar";
+import { renderLog } from "../../utils/logging";
 
 
 export default class BallotSummaryModal extends Component {
@@ -17,6 +19,7 @@ export default class BallotSummaryModal extends Component {
   }
 
   render () {
+    renderLog(__filename);
     return <Modal className="ballot-summary ballot-summary__modal ballot-summary__modal-mobile"
                   show={this.props.show}
                   onHide={this.props.toggleFunction} >

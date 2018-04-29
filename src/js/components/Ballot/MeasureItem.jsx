@@ -1,10 +1,12 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import { historyPush } from "../../utils/cordovaUtils";
 import ItemActionBar from "../Widgets/ItemActionBar";
 import ItemPositionStatementActionBar from "../Widgets/ItemPositionStatementActionBar";
 import ItemSupportOpposeCounts from "../Widgets/ItemSupportOpposeCounts";
 import ItemTinyPositionBreakdownList from "../Position/ItemTinyPositionBreakdownList";
+import { renderLog } from "../../utils/logging";
 import ReadMore from "../Widgets/ReadMore";
 import BookmarkToggle from "../Bookmarks/BookmarkToggle";
 import SupportStore from "../../stores/SupportStore";
@@ -44,7 +46,9 @@ export default class MeasureItem extends Component {
   _onChange () {
     this.setState({ supportProps: SupportStore.get(this.props.we_vote_id), transitioning: false });
   }
+
   render () {
+    renderLog(__filename);
     const { supportProps, transitioning } = this.state;
     let { ballot_item_display_name, measure_subtitle,
           measure_text, we_vote_id, state_display_name,

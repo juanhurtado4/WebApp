@@ -4,13 +4,22 @@ import assign from "object-assign";
 import BallotActions from "../actions/BallotActions";
 import BookmarkStore from "../stores/BookmarkStore";
 import SupportStore from "../stores/SupportStore";
-import VoterGuideActions from "../actions/VoterGuideActions";
 import VoterStore from "../stores/VoterStore";
 
 class BallotStore extends ReduceStore {
 
   getInitialState () {
     return {
+      ballot_item_search_results_list: [],
+      ballot_item_unfurled_tracker: {},
+      ballotItemListCandidatesDict: {}, // Dictionary with ballot_item_we_vote_id as key and list of candidate we_vote_ids as value
+    };
+  }
+
+  resetState () {
+    return {
+      ballot_item_search_results_list: [],
+      ballot_item_unfurled_tracker: {},
     };
   }
 
@@ -43,6 +52,10 @@ class BallotStore extends ReduceStore {
     return this.getState().ballot_election_list || [];
   }
 
+  ballotItemSearchResultsList () {
+    return this.getState().ballotItemSearchResultsList || [];
+  }
+
   get ballotLength () {
     let ballot = this.ballot || [];
     return ballot.length || 0;
@@ -58,6 +71,12 @@ class BallotStore extends ReduceStore {
     if (!this.isLoaded()){ return undefined; }
     let civicId = VoterStore.election_id();
     return this.getState().ballots[civicId].election_day_text;
+  }
+
+  get currentBallotGoogleCivicElectionId () {
+    if (!this.isLoaded()){ return undefined; }
+    let civicId = VoterStore.election_id();
+    return this.getState().ballots[civicId].google_civic_election_id;
   }
 
   get currentBallotPollingLocationSource () {
@@ -127,6 +146,20 @@ class BallotStore extends ReduceStore {
     });
   }
 
+  get current_ballot_item_unfurled_tracker () {
+    return this.getState().ballot_item_unfurled_tracker;
+  }
+
+  getBallotItemUnfurledStatus (we_vote_id){
+    if (we_vote_id ) {
+      //note: this method is made to always returns a Boolean
+      // console.log(getBallotItemUnfurledStatus, this.getState())
+      return !!this.getState().ballot_item_unfurled_tracker[we_vote_id];
+    } else {
+      return false;
+    }
+  }
+
   //Filters the ballot items which are type OFFICE
   ballot_filtered_unsupported_candidates () {
     return this.ballot.map( item =>{
@@ -169,17 +202,42 @@ class BallotStore extends ReduceStore {
     }
   }
 
-  reduce (state, action) {
+  getTopLevelBallotItemWeVoteIds () {
+    if (this.getState().ballotItemListCandidatesDict) {
+      return Object.keys(this.getState().ballotItemListCandidatesDict);
+    }
+    return [];
+  }
 
+  getCandidateWeVoteIdsForOfficeWeVoteId (officeWeVoteId) {
+    return this.getState().ballotItemListCandidatesDict[officeWeVoteId] || [];
+  }
+
+  reduce (state, action) {
     // Exit if we don't have a successful response (since we expect certain variables in a successful response below)
     if (!action.res || !action.res.success)
       return state;
 
+    let ballotCaveat = "";
     let google_civic_election_id;
     let newBallot = {};
-    let ballotCaveat = "";
+    let revisedState;
 
     switch (action.type) {
+      case "ballotItemOptionsClear":
+        // console.log("action.res", action.res)
+        return {
+          ...state,
+          ballotItemSearchResultsList: []
+        };
+
+      case "ballotItemOptionsRetrieve":
+        // console.log("BallotStore, voterBallotListRetrieve response received.");
+        let ballotItemSearchResultsList = action.res.ballot_item_list;
+        return {
+          ...state,
+          ballotItemSearchResultsList: ballotItemSearchResultsList
+        };
 
       case "voterAddressRetrieve":
         // console.log("BallotStore, voterAddressRetrieve response received, calling voterBallotItemsRetrieve now.");
@@ -189,29 +247,60 @@ class BallotStore extends ReduceStore {
       case "voterBallotItemsRetrieve":
         // console.log("BallotStore, voterBallotItemsRetrieve response received.");
         // console.log("BallotStore, voterBallotItemsRetrieve, action.res.ballot_item_list: ", action.res.ballot_item_list);
+        const new_ballot_item_unfurled_tracker = {};
         google_civic_election_id = action.res.google_civic_election_id || 0;
         google_civic_election_id = parseInt(google_civic_election_id, 10);
+        revisedState = state;
         if (google_civic_election_id !== 0) {
           newBallot[google_civic_election_id] = action.res;
-
-          VoterGuideActions.voterGuidesToFollowRetrieve(google_civic_election_id);
-          VoterGuideActions.voterGuidesFollowedRetrieve(google_civic_election_id);
-
-          return {
-            ...state,
+          //tracking displaying raccoon flags for offices
+          newBallot[google_civic_election_id].ballot_item_list.forEach(ballot_item => {
+            if (ballot_item.kind_of_ballot_item === "OFFICE") {
+              new_ballot_item_unfurled_tracker[ballot_item.we_vote_id] = false;
+            }
+          });
+          revisedState = Object.assign({}, revisedState, {
             ballots: assign({}, state.ballots, newBallot),
-          };
+            ballot_item_unfurled_tracker: assign({}, state.ballot_item_unfurled_tracker, new_ballot_item_unfurled_tracker)
+          });
         }
-        return state;
+        // Now capture the candidate we vote ids under each office
+        let tempBallotItemList = action.res.ballot_item_list;
+        let officeWeVoteId;
+        let ballotItemListCandidatesDict = state.ballotItemListCandidatesDict;
+        if (ballotItemListCandidatesDict === undefined) {
+          // Do not remove the following line
+          console.log("ERROR: undefined ballotItemListCandidatesDict in BallotStore reduce");
+        }
+
+        if (tempBallotItemList && ballotItemListCandidatesDict) {
+          tempBallotItemList.forEach(oneBallotItem => {
+            if (oneBallotItem.kind_of_ballot_item === "OFFICE" && oneBallotItem.candidate_list) {
+              officeWeVoteId = oneBallotItem.we_vote_id;
+              if (!ballotItemListCandidatesDict[officeWeVoteId]) {
+                ballotItemListCandidatesDict[officeWeVoteId] = [];
+              }
+              oneBallotItem.candidate_list.forEach(oneCandidate => {
+                ballotItemListCandidatesDict[officeWeVoteId].push(oneCandidate.we_vote_id);
+              });
+            }
+          });
+          revisedState = Object.assign({}, revisedState, {
+             ballotItemListCandidatesDict: ballotItemListCandidatesDict,
+          });
+        }
+        return revisedState;
 
       case "voterBallotListRetrieve":
+        // console.log("BallotStore, voterBallotListRetrieve response received.");
         let ballot_election_list = action.res.voter_ballot_list;
         return {
-         ...state,
-         ballot_election_list: ballot_election_list
+           ...state,
+           ballot_election_list: ballot_election_list
         };
 
       case "voterAddressSave":
+        // console.log("BallotStore, voterAddressSave response received.");
         if (action.res.status === "SIMPLE_ADDRESS_SAVE") {
           return state;
         } else {
@@ -232,6 +321,18 @@ class BallotStore extends ReduceStore {
         }
         return state;
 
+      case "voterBallotItemOpenOrClosedSave":
+        // console.log("action.res", action.res)
+        return {
+          ...state,
+          ballot_item_unfurled_tracker: action.res.ballot_item_unfurled_tracker,
+        };
+
+      case "voterSignOut":
+        // console.log("resetting BallotStore");
+        BallotActions.voterBallotItemsRetrieve();
+        return this.resetState();
+
       case "error-voterBallotItemsRetrieve":
       default:
         return state;
@@ -241,4 +342,4 @@ class BallotStore extends ReduceStore {
 
 }
 
-module.exports = new BallotStore(Dispatcher);
+export default new BallotStore(Dispatcher);

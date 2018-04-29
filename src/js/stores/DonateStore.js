@@ -8,6 +8,10 @@ class DonateStore extends ReduceStore {
     };
   }
 
+  resetState () {
+    return {};
+  }
+
   donation_success () {
     return this.getState().success;
   }
@@ -64,10 +68,14 @@ class DonateStore extends ReduceStore {
           donation_refund_completed: false,
         };
 
+      case "voterSignOut":
+        // console.log("resetting DonateStore");
+        return this.resetState();
+
       default:
         return state;
     }
   }
 }
 
-module.exports = new DonateStore(Dispatcher);
+export default new DonateStore(Dispatcher);

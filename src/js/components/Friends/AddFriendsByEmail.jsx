@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Button } from "react-bootstrap";
 import { historyPush } from "../../utils/cordovaUtils";
 import LoadingWheel from "../LoadingWheel";
@@ -6,6 +7,7 @@ import FriendActions from "../../actions/FriendActions";
 import FriendStore from "../../stores/FriendStore";
 import VoterStore from "../../stores/VoterStore";
 import { validateEmail } from "../../utils/email-functions";
+import { renderLog } from "../../utils/logging";
 
 export default class AddFriendsByEmail extends Component {
   static propTypes = {
@@ -296,6 +298,7 @@ export default class AddFriendsByEmail extends Component {
   }
 
 	render () {
+    renderLog(__filename);
     var atLeastOneValidated = validateEmail(this.state.friend1_email_address) || validateEmail(this.state.friend2_email_address) || validateEmail(this.state.friend3_email_address) || validateEmail(this.state.friend4_email_address) || validateEmail(this.state.friend5_email_address);
 
     var { loading } = this.state;

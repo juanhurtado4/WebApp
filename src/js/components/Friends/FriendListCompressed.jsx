@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import FriendDisplayForListCompressed from "./FriendDisplayForListCompressed";
+import { renderLog } from "../../utils/logging";
 
 export default class FriendListCompressed extends Component {
 
@@ -28,6 +30,7 @@ export default class FriendListCompressed extends Component {
   }
 
   render () {
+    renderLog(__filename);
     if (this.state.friend_list === undefined) {
       return null;
     }

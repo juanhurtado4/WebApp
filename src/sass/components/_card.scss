@@ -121,6 +121,7 @@ $candidate-font-size: .875rem;
       font-size: 18px;
       font-weight: 700;
       // margin-right: 24px; // space for bookmark button
+      margin-right: $space-sm;  // space between candidate name and description
       margin-bottom: $space-sm;
       vertical-align: middle;
       @include breakpoints(mid-small) {
@@ -208,7 +209,6 @@ $candidate-font-size: .875rem;
     }
 
     &__ballot-name-item {
-      display: inline-block;
       float: left;
     }
 
@@ -385,7 +385,14 @@ $candidate-font-size: .875rem;
 }
 
 .card-popover {
+  padding-top: $space-none;
+  padding-left: $space-none;
+  padding-right: $space-none;
   max-width: 350px;
+  @include breakpoints (max mid-small) {
+    max-width: 290px;
+  }
+
   &__width--minimum {
     width: 90vw;
   }

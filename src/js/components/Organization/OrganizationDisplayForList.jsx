@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Link } from "react-router";
 import ImageHandler from "../../components/ImageHandler";
 import { removeTwitterNameFromDescription } from "../../utils/textFormat";
@@ -6,6 +7,7 @@ import PositionRatingSnippet from "../../components/Widgets/PositionRatingSnippe
 import PositionInformationOnlySnippet from "../../components/Widgets/PositionInformationOnlySnippet";
 import PositionSupportOpposeSnippet from "../../components/Widgets/PositionSupportOpposeSnippet";
 import ReadMore from "../../components/Widgets/ReadMore";
+import { renderLog } from "../../utils/logging";
 
 // OrganizationDisplayForList is used to display Organizations (as opposed to Voter Guides)
 export default class OrganizationDisplayForList extends Component {
@@ -36,7 +38,7 @@ export default class OrganizationDisplayForList extends Component {
   };
 
   render () {
-    // console.log("OrganizationDisplayForList render");
+    renderLog(__filename);
     if (this.props.organization_we_vote_id === undefined) {
       // console.log("OrganizationDisplayForList this.props.organization_we_vote_id === undefined");
       return null;

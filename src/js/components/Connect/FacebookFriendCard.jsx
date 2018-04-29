@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import ImageHandler from "../../components/ImageHandler";
+import { renderLog } from "../../utils/logging";
 
 export default class FacebookFriendCard extends Component {
   static propTypes = {
@@ -13,6 +15,7 @@ export default class FacebookFriendCard extends Component {
   }
 
   render () {
+    renderLog(__filename);
     return <div className="facebook-friend card-child card-child--not-followed">
         <div className="card-child__avatar">
           <ImageHandler sizeClassName="icon-lg " imageUrl={this.props.picture.data.url} />

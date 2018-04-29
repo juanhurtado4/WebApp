@@ -3,6 +3,8 @@ import Helmet from "react-helmet";
 import { Link } from "react-router";
 import AnalyticsActions from "../../actions/AnalyticsActions";
 import ImageHandler from "../../components/ImageHandler";
+import { renderLog } from "../../utils/logging";
+import OpenExternalWebSite from "../../utils/OpenExternalWebSite";
 import VoterStore from "../../stores/VoterStore";
 import { weVoteBoard, weVoteStaff } from "./people";
 
@@ -15,11 +17,12 @@ export default class Team extends Component {
     return {};
   }
 
-  componentDidMount (){
+  componentDidMount () {
     AnalyticsActions.saveActionAboutTeam(VoterStore.election_id());
   }
 
   render () {
+    renderLog(__filename);
     return <div>
       <Helmet title="Team - We Vote"/>
       <div className="container-fluid card u-inset__v--md">
@@ -66,9 +69,12 @@ export default class Team extends Component {
           <Link to="/more/credits">We are thankful for our volunteers, our board of directors, and the
             organizations</Link> that are critical to our work.<br />
           <br />
-          <h3 className="h3"><a href="https://help.wevote.us/hc/en-us/sections/115000140947-What-is-We-Vote-"
-                            target="_blank">Visit our help center to learn more about We Vote.&nbsp;<i
-          className="fa fa-external-link"/></a></h3>
+          <h3 className="h3">
+            <OpenExternalWebSite url="https://help.wevote.us/hc/en-us/sections/115000140947-What-is-We-Vote-"
+                                 target="_blank"
+                                 className="open-web-site open-web-site__no-left-padding"
+                                 body={<span>Visit our help center to learn more about We Vote.&nbsp;<i className="fa fa-external-link"/></span>} />
+          </h3>
 
         </section>
       </div>

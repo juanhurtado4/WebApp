@@ -11,6 +11,10 @@ class FriendStore extends ReduceStore {
     };
   }
 
+  resetState () {
+    return {};
+  }
+
   currentFriends (){
     return this.getDataFromArr(this.getState().current_friends) || {};
   }
@@ -250,10 +254,18 @@ class FriendStore extends ReduceStore {
           ...state
         };
 
+      case "voterSignOut":
+        // console.log("resetting FriendStore");
+        FriendActions.currentFriends();
+        FriendActions.friendInvitationsSentByMe();
+        FriendActions.friendInvitationsSentToMe();
+        FriendActions.friendInvitationsProcessed();
+        return this.resetState();
+
       default:
         return state;
     }
   }
 }
 
-module.exports = new FriendStore(Dispatcher);
+export default new FriendStore(Dispatcher);

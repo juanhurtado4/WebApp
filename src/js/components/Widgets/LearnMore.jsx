@@ -1,13 +1,15 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import TextTruncate from "react-text-truncate";
+import { renderLog } from "../../utils/logging";
 
-export default class ReadMore extends Component {
+export default class LearnMore extends Component {
   static propTypes = {
     text_to_display: PropTypes.node.isRequired,
     show_more_text: PropTypes.node,
     learn_more_text: PropTypes.node,
     num_of_lines: PropTypes.number,
-    on_click: PropTypes.func.isRequired,
+    on_click: PropTypes.func,
   };
 
   constructor (props) {
@@ -37,6 +39,7 @@ export default class ReadMore extends Component {
   }
 
   render () {
+    renderLog(__filename);
     let { text_to_display, show_more_text, num_of_lines, learn_more_text, on_click } = this.props;
     // default prop valuess
     if (num_of_lines === undefined) {

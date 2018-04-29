@@ -1,6 +1,6 @@
 import Dispatcher from "../dispatcher/Dispatcher";
 
-module.exports = {
+export default {
 
   pledgeToVoteWithVoterGuide: function (voter_guide_we_vote_id, delete_pledge = false) {
     Dispatcher.loadEndpoint("pledgeToVoteWithVoterGuide", {
@@ -9,10 +9,18 @@ module.exports = {
     });
   },
 
-  voterGuidesToFollowRetrieve: function (election_id, search_string, add_voter_guides_not_from_election) {
+  voterGuidesRetrieve: function (organization_we_vote_id) {
+    Dispatcher.loadEndpoint("voterGuidesRetrieve", {
+      organization_we_vote_id: organization_we_vote_id
+    });
+  },
+
+  voterGuidesToFollowRetrieve: function (election_id, search_string, add_voter_guides_not_from_election, start_retrieve_at_this_number = 0) {
+    let maximum_number_to_retrieve = 75; // This needs to match the variable in VoterGuideStore
     Dispatcher.loadEndpoint("voterGuidesToFollowRetrieve", {
       google_civic_election_id: election_id,
-      maximum_number_to_retrieve: 300,
+      start_retrieve_at_this_number: start_retrieve_at_this_number,
+      maximum_number_to_retrieve: maximum_number_to_retrieve,
       search_string: search_string || "",
       add_voter_guides_not_from_election: add_voter_guides_not_from_election || false,
     });
@@ -66,6 +74,12 @@ module.exports = {
   voterGuidesIgnoredRetrieve: function () {
     // We do not currently limit the maximum_number_to_retrieve
     Dispatcher.loadEndpoint("voterGuidesIgnoredRetrieve");
-  }
+  },
 
+  voterGuideSave: function (google_civic_election_id, voter_guide_we_vote_id) {
+    Dispatcher.loadEndpoint("voterGuideSave", {
+      google_civic_election_id: google_civic_election_id,
+      voter_guide_we_vote_id: voter_guide_we_vote_id
+    } );
+  }
 };

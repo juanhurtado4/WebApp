@@ -1,6 +1,8 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Tooltip, OverlayTrigger } from "react-bootstrap";
 import { cordovaDot } from "../../utils/cordovaUtils";
+import { renderLog } from "../../utils/logging";
 
 export default class ItemSupportOpposeCounts extends Component {
   static propTypes = {
@@ -30,6 +32,7 @@ export default class ItemSupportOpposeCounts extends Component {
   }
 
   render () {
+    renderLog(__filename);
     if (this.state.supportProps === undefined) {
       return null;
     }

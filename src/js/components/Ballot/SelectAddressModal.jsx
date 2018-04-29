@@ -1,7 +1,9 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 import { Modal } from "react-bootstrap";
 import AddressBox from "../../components/AddressBox";
 import { calculateBallotBaseUrl } from "../../utils/textFormat";
+import { renderLog } from "../../utils/logging";
 
 export default class SelectAddressModal extends Component {
   // This modal will allow users to change their addresses
@@ -19,6 +21,7 @@ export default class SelectAddressModal extends Component {
   }
 
   render () {
+    renderLog(__filename);
     let ballotBaseUrl = calculateBallotBaseUrl(this.props.ballotBaseUrl, this.props.pathname);
 
     return <Modal className="select-address select-address__modal select-address__modal-mobile"
